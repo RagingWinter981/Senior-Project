@@ -27,6 +27,46 @@
             font-weight: bold;
         }
 
+        .main {
+            margin-left: 160px; /* Same as the width of the sidenav */
+            font-size: 28px; /* Increased text to enable scrolling */
+            padding: 0px 10px;
+            display: flex;
+            margin-top: 20px;
+        }
+        .main input[type=text] {
+            float: left;
+            padding: 6px;
+            border: none;
+            margin-top: 8px;
+            margin-right: 16px;
+            font-size: 17px;
+            border-radius: 8px;
+            border-style: solid;
+            border-color: #807e7e;
+        }
+        .toptab {
+            /* margin-top: 1%; */
+            /* overflow: hidden; */
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        /* Style the buttons that are used to open the tab content */
+        .toptab button {
+            background-color: inherit;
+            float: Right;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+        }
+
+        /* Change background color of buttons on hover */
+        .toptab button:hover {
+             background-color: #ddd;
+        }
         /* Tabs styling */
         .sidenav {
             height: 100%; /* Full-height: remove this if you want "auto" height */
@@ -72,8 +112,8 @@
             border-radius: 8px;
             border-style: solid;
             border-color: #807e7e;
-            box-shadow: 10px 4px 8px rgba(0.2, 0.2, 0.2, 0.2);
-            width: 25%;
+            box-shadow: 10px 4px 8px rgba(96, 34, 34, 0.2);
+            width: 95%;
             padding: 20px;
             text-align: left;
             transition: transform 0.3s ease-in-out;
@@ -110,22 +150,70 @@
             .card {
                 width: 80%;
             }
+
         }
     </style>
 </head>
 <body>
-
-<h1>Add Events </h1>
+    <div class="toptab">
+        <button>Log out</button>
+    </div>
 
 <!-- Main Content Section: Tabs and Cards side-by-side -->
 <div class="main-container">
+
     <!-- Tab Section -->
     <div class="sidenav">
-            <a a=active href="index.html">Home</a>
+            <a a=active href="paHome.html">Home</a>
             <a href="#">Add Events</a>
             <a href="checkHours.html">Check Hours</a>
             <a href="resources.html">Resources</a>
+
     </div>
+    
+
+    <div class="main">
+        <h1>Add Events </h1>
+    </div>
+    <div class="main">
+        <input type="text" placeholder="Search..">
+    </div>
+        
+    </div>
+    <div class="main">
+        <div class = "card">
+            <header>Name of Event</header>
+            <br>
+            <p>Date: Tues, Nov 11, 2024</p>
+            <p>availability: 4/8 Spots open</p>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class = "card">
+            <header>Name of Event</header>
+            <br>
+            <p>Date: Tues, Nov 11, 2024</p>
+            <p>availability: 4/8 Spots open</p>
+        </div>
+    </div>
+    <div class="main">
+        <div class = "card">
+            <header>Name of Event</header>
+            <br>
+            <p>Date: Tues, Nov 11, 2024</p>
+            <p>availability: 4/8 Spots open</p>
+        </div>
+    </div>
+    <div class="main">
+        <div class = "card">
+            <header>Name of Event</header>
+            <br>
+            <p>Date: Tues, Nov 11, 2024</p>
+            <p>availability: 4/8 Spots open</p>
+        </div>
+    </div>
+
 
 </div>
 

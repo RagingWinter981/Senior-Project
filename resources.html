@@ -19,12 +19,27 @@
             background-color: #ffffff;
             padding: 1%;
         }
+        .header {
+            position: sticky;
+            top: 0;
+            padding: 10px 16px;
+            padding-left: 17%;
+            background: #555;
+            color: #f1f1f1;
+        }
         .headerfont {
             color: #333;
             text-align: left;
             background-color: #ffffff;
             font-size: 30px;
             font-weight: bold;
+        }
+        .main {
+            margin-left: 160px; /* Same as the width of the sidenav */
+            font-size: 28px; /* Increased text to enable scrolling */
+            padding: 0px 10px;
+            display: flex;
+            margin-top: 20px;
         }
 
         /* Tabs styling */
@@ -73,7 +88,7 @@
             border-style: solid;
             border-color: #807e7e;
             box-shadow: 10px 4px 8px rgba(0.2, 0.2, 0.2, 0.2);
-            width: 25%;
+            width: 95%;
             padding: 20px;
             text-align: left;
             transition: transform 0.3s ease-in-out;
@@ -121,12 +136,91 @@
 <div class="main-container">
     <!-- Tab Section -->
     <div class="sidenav">
-            <a a=active href="index.html">Home</a>
+            <a a=active href="paHome.html">Home</a>
             <a href="AddEvents.html">Add Events</a>
             <a href="checkHours.html">Check Hours</a>
             <a href="resources.html">Resources</a>
     </div>
-
+    <div class="header" id="myHeader">
+        <h2>Leadership</h2>
+    </div>
+        <div class = "main">
+            <div class="card">
+                <h3>President</h3>
+                <p>Name: Winston Erevelles</p>
+            </div>
+        </div>
+        <div class = "main">
+            <div class="card">
+                <h3>Provost and Executive Vice President for Academic Affairs</h3>
+                <p>Name: Jason Pierce, Ph.D.</p>
+            </div>
+        </div>
+        <div class = "main">
+            <div class="card">
+                <h3>Vice President for Mission</h3>
+                <p>Name: The Rev. John Thompson, S.M., Ed.D.</p>
+            </div>
+        </div>
+        <div class = "main">
+            <div class="card">
+                <h3>Vice President for Administration and Finance</h3>
+                <p>Name: Aaron Hanna</p>
+            </div>
+        </div>
+        <div class = "main">
+            <div class="card">
+                <h3>Vice President for University Advancement</h3>
+                <p>Name: Joel Lauer</p>
+            </div>
+        </div>
+        <div class = "main">
+            <div class="card">
+                <h3>Vice President for Information Services</h3>
+                <p>Name: Curtis D. White</p>
+            </div>
+        </div>
+        <div class="header" id="myHeader">
+            <h2>Board of Trustees</h2>
+        </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>Chancellor, St. Mary’s University</h3>
+                    <p>Name: The Rev. Oscar Vasquez, S.M.</p>
+                </div>
+            </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>Chair, St. Mary’s Board of Trustees</h3>
+                    <p>Name: Lynda Ellis</p>
+                </div>
+            </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>Vice Chair of the Board of Trustees</h3>
+                    <p>Name: Joseph Diaz, M.D.</p>
+                </div>
+            </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>Vice Chair of the Board of Trustees</h3>
+                    <p>Name: Sandra Nannini</p>
+                </div>
+            </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>President, St. Mary’s University</h3>
+                    <p>Name: Winston Erevelles, Ph.D.</p>
+                </div>
+            </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>Dean Emeritus, American University of Sharjah</h3>
+                    <p>Name: Leland T. Blank, Ph.D., P.E.</p>
+                </div>
+            </div>
+    
+    
 </div>
 
 
