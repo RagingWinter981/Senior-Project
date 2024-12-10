@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submission Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+            /* Tabs styling */
+            .sidenav {
+            height: 100%; /* Full-height: remove this if you want "auto" height */
+            width: 160px; /* Set the width of the sidebar */
+            position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+            z-index: 1; /* Stay on top */
+            top: 0; /* Stay at the top */
+            left: 0;
+            background-color: #030518; /* Black */
+            overflow-x: hidden; /* Disable horizontal scroll */
+            padding-top: 100px;
+        }
+
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #a39d9d;
+            display: block;
+        }
+
+        .sidenav a:hover {
+                color: #f1f1f1;
+            }
+
+        .sidenav a.active {
+            background-color: #556b8e;
+        }
+    .form-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-group input[type="file"] {
+      padding: 3px;
+    }
+    .form-group .optional {
+      font-style: italic;
+      font-size: 0.9em;
+    }
+    .form-group button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .form-group button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="sidenav">
+        <a a=active href="AdminHome.html">Home</a>
+        <a href="CreateEvent.html">Create Events</a>
+        <a href="RequestEvents.html">Request Events</a>
+        <a href="SearchEvent.html">Search Events</a>
+        <a href="RequestApprovalHours.html">Approval Hours</a>
+        <a href="PAHours.html">PA Hours</a>
+        <a href="EditAccounts.html">Edit Accounts</a>
+    </div>
+    </div> 
+  <div class="form-container">
+    <h2>Submission Form</h2>
+    <form>
+      <!-- Report Time -->
+      <div class="form-group">
+        <label for="report-time">Report Time</label>
+        <input type="time" id="report-time" name="report-time" required>
+      </div>
+      <!-- Start Time -->
+      <div class="form-group">
+        <label for="start-time">Start Time</label>
+        <input type="time" id="start-time" name="start-time" required>
+      </div>
+      <!-- End Time -->
+      <div class="form-group">
+        <label for="end-time">End Time</label>
+        <input type="time" id="end-time" name="end-time" required>
+      </div>
+      <!-- +/- Time -->
+      <div class="form-group">
+        <label for="plus-minus-time">+/- Time</label>
+        <input type="text" id="plus-minus-time" name="plus-minus-time" placeholder="Enter time adjustment" required>
+      </div>
+      <!-- Date -->
+      <div class="form-group">
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+      <!-- Location -->
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" placeholder="Enter location" required>
+      </div>
+      <!-- Credit Hours -->
+      <div class="form-group">
+        <label for="credit-hours">Credit Hours</label>
+        <input type="number" id="credit-hours" name="credit-hours" min="0" step="0.1" required>
+      </div>
+      <!-- Attire -->
+      <div class="form-group">
+        <label for="attire">Attire</label>
+        <input type="text" id="attire" name="attire" placeholder="Enter attire details" required>
+      </div>
+      <!-- Point of Contact -->
+      <fieldset class="form-group">
+        <legend>Point of Contact</legend>
+        <label for="contact-name">Name</label>
+        <input type="text" id="contact-name" name="contact-name" placeholder="Enter name" required>
+        <label for="contact-office">Office</label>
+        <input type="text" id="contact-office" name="contact-office" placeholder="Enter office details" required>
+        <label for="contact-title">Title</label>
+        <input type="text" id="contact-title" name="contact-title" placeholder="Enter title" required>
+      </fieldset>
+      <!-- Descriptions -->
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4" placeholder="Enter description" required></textarea>
+      </div>
+      <!-- Notes (Optional) -->
+      <div class="form-group">
+        <label for="notes">Notes <span class="optional">(Optional)</span></label>
+        <textarea id="notes" name="notes" rows="3" placeholder="Enter additional notes"></textarea>
+      </div>
+      <!-- Photos (Optional) -->
+      <div class="form-group">
+        <label for="photos">Photos <span class="optional">(Optional)</span></label>
+        <input type="file" id="photos" name="photos" accept="image/*" multiple>
+      </div>
+      <!-- Number of Spots -->
+      <div class="form-group">
+        <label for="number-of-spots">Number of Spots</label>
+        <input type="number" id="number-of-spots" name="number-of-spots" min="1" required>
+      </div>
+      <!-- Submit Button -->
+      <div class="form-group">
+        <button type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

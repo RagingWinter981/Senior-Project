@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+                /* Tabs styling */
+                .sidenav {
+            height: 100%; /* Full-height: remove this if you want "auto" height */
+            width: 160px; /* Set the width of the sidebar */
+            position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+            z-index: 1; /* Stay on top */
+            top: 0; /* Stay at the top */
+            left: 0;
+            background-color: #030518; /* Black */
+            overflow-x: hidden; /* Disable horizontal scroll */
+            padding-top: 100px;
+        }
+
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #a39d9d;
+            display: block;
+        }
+
+        .sidenav a:hover {
+                color: #f1f1f1;
+            }
+
+        .sidenav a.active {
+            background-color: #556b8e;
+        }
+
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button.add {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button.edit {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        button.delete {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .user-list {
+            margin-top: 20px;
+        }
+
+        .user-card {
+            background: #f4f4f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-card .info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-card .info span {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .user-card .actions button {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidenav">
+        <a a=active href="AdminHome.html">Home</a>
+        <a href="CreateEvent.html">Create Events</a>
+        <a href="RequestEvents.html">Request Events</a>
+        <a href="SearchEvent.html">Search Events</a>
+        <a href="RequestApprovalHours.html">Approval Hours</a>
+        <a href="PAHours.html">PA Hours</a>
+        <a href="EditAccounts.html">Edit Accounts</a>
+</div>
+
+<h1>Edit Accounts</h1>
+<div class="container">
+    <!-- Add/Edit Form -->
+    <form id="userForm">
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" placeholder="Enter first name" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" placeholder="Enter last name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter email address" required>
+        </div>
+        <div class="button-group">
+            <button type="button" class="add" id="addUser">Add User</button>
+            <button type="button" class="edit" id="editUser" disabled>Edit User</button>
+        </div>
+    </form>
+
+    <!-- User List -->
+    <div class="user-list" id="userList">
+        <!-- Dynamic user cards will be appended here -->
+    </div>
+</div>
+
+<script>
+    const userList = document.getElementById('userList');
+    const userForm = document.getElementById('userForm');
+    const addUserButton = document.getElementById('addUser');
+    const editUserButton = document.getElementById('editUser');
+
+    let users = [];
+    let currentEditIndex = null;
+
+    // Add or Edit User
+    addUserButton.addEventListener('click', () => {
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const email = document.getElementById('email').value;
+
+        if (!firstName || !lastName || !email) {
+            alert('Please fill out all fields.');
+            return;
+        }
+
+        users.push({ firstName, lastName, email });
+        clearForm();
+        renderUserList();
+    });
+
+    editUserButton.addEventListener('click', () => {
+        if (currentEditIndex !== null) {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+
+            if (!firstName || !lastName || !email) {
+                alert('Please fill out all fields.');
+                return;
+            }
+
+            users[currentEditIndex] = { firstName, lastName, email };
+            currentEditIndex = null;
+            clearForm();
+            renderUserList();
+            editUserButton.disabled = true;
+            addUserButton.disabled = false;
+        }
+    });
+
+    // Render User List
+    function renderUserList() {
+        userList.innerHTML = '';
+        users.forEach((user, index) => {
+            const userCard = document.createElement('div');
+            userCard.classList.add('user-card');
+
+            userCard.innerHTML = `
+                <div class="info">
+                    <span><strong>Name:</strong> ${user.firstName} ${user.lastName}</span>
+                    <span><strong>Email:</strong> ${user.email}</span>
+                </div>
+                <div class="actions">
+                    <button class="edit" onclick="editUser(${index})">Edit</button>
+                    <button class="delete" onclick="deleteUser(${index})">Delete</button>
+                </div>
+            `;
+
+            userList.appendChild(userCard);
+        });
+    }
+
+    // Edit User
+    window.editUser = function(index) {
+        const user = users[index];
+        document.getElementById('firstName').value = user.firstName;
+        document.getElementById('lastName').value = user.lastName;
+        document.getElementById('email').value = user.email;
+
+        currentEditIndex = index;
+        editUserButton.disabled = false;
+        addUserButton.disabled = true;
+    };
+
+    // Delete User
+    window.deleteUser = function(index) {
+        users.splice(index, 1);
+        renderUserList();
+    };
+
+    // Clear Form
+    function clearForm() {
+        userForm.reset();
+        editUserButton.disabled = true;
+        addUserButton.disabled = false;
+    }
+</script>
+
+</body>
+</html>

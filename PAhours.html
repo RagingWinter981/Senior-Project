@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+                /* Tabs styling */
+                .sidenav {
+            height: 100%; /* Full-height: remove this if you want "auto" height */
+            width: 160px; /* Set the width of the sidebar */
+            position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+            z-index: 1; /* Stay on top */
+            top: 0; /* Stay at the top */
+            left: 0;
+            background-color: #030518; /* Black */
+            overflow-x: hidden; /* Disable horizontal scroll */
+            padding-top: 100px;
+        }
+
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #a39d9d;
+            display: block;
+        }
+
+        .sidenav a:hover {
+                color: #f1f1f1;
+            }
+
+        .sidenav a.active {
+            background-color: #556b8e;
+        }
+
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        /* Bar Graph Container */
+        .graph-container {
+            width: 60%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Cards Section */
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 720px) {
+            .graph-container {
+                width: 90%;
+            }
+
+            .card {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidenav">
+        <a a=active href="AdminHome.html">Home</a>
+        <a href="CreateEvent.html">Create Events</a>
+        <a href="RequestEvents.html">Request Events</a>
+        <a href="SearchEvent.html">Search Events</a>
+        <a href="RequestApprovalHours.html">Approval Hours</a>
+        <a href="PAHours.html">PA Hours</a>
+        <a href="EditAccounts.html">Edit Accounts</a>
+</div>
+
+<h1>Hour Tracking</h1>
+
+
+
+<!-- Bar Graph -->
+<div class="graph-container">
+    <canvas id="barGraph"></canvas>
+</div>
+
+<!-- Cards Section -->
+<div class="cards-container">
+    <!-- Example Cards (Can be repeated for each person) -->
+    <div class="card">
+        <h2>John Doe</h2>
+        <p><strong>Hours Completed:</strong> 15</p>
+        <p><strong>Events Worked:</strong></p>
+        <ul>
+            <li>Event A</li>
+            <li>Event B</li>
+            <li>Event C</li>
+        </ul>
+    </div>
+    <div class="card">
+        <h2>Jane Smith</h2>
+        <p><strong>Hours Completed:</strong> 20</p>
+        <p><strong>Events Worked:</strong></p>
+        <ul>
+            <li>Event X</li>
+            <li>Event Y</li>
+        </ul>
+    </div>
+    <!-- Repeat Cards for more people -->
+</div>
+
+<!-- Chart.js Script -->
+<script>
+    // Sample Data for Bar Graph
+    const labels = [
+        'Person 1', 'Person 2', 'Person 3', 'Person 4', 'Person 5',
+        'Person 6', 'Person 7', 'Person 8', 'Person 9', 'Person 10',
+        'Person 11', 'Person 12', 'Person 13', 'Person 14', 'Person 15',
+        'Person 16', 'Person 17', 'Person 18', 'Person 19', 'Person 20',
+        'Person 21', 'Person 22', 'Person 23', 'Person 24', 'Person 25',
+        'Person 26', 'Person 27', 'Person 28', 'Person 29', 'Person 30'
+    ];
+
+    const hours = [
+        5, 10, 8, 12, 15, 20, 18, 15, 10, 20,
+        14, 12, 13, 19, 16, 14, 15, 18, 10, 15,
+        17, 13, 12, 15, 20, 14, 16, 17, 19, 15
+    ];
+
+    const ctx = document.getElementById('barGraph').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Hours Completed',
+                data: hours,
+                backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: 'y', // Horizontal bar graph
+            plugins: {
+                legend: {
+                    display: true,
+                }
+            },
+            scales: {
+                x: {
+                    max: 20, // Cap the maximum hours at 20
+                    title: {
+                        display: true,
+                        text: 'Hours'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'People'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

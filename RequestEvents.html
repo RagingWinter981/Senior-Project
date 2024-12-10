@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Approve/Deny Event Requests</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1a237e; /* Dark Blue */
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+    }
+    /* Tabs styling */
+    .sidenav {
+            height: 100%; /* Full-height: remove this if you want "auto" height */
+            width: 160px; /* Set the width of the sidebar */
+            position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+            z-index: 1; /* Stay on top */
+            top: 0; /* Stay at the top */
+            left: 0;
+            background-color: #030518; /* Black */
+            overflow-x: hidden; /* Disable horizontal scroll */
+            padding-top: 100px;
+        }
+
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #a39d9d;
+            display: block;
+        }
+
+        .sidenav a:hover {
+                color: #f1f1f1;
+            }
+
+        .sidenav a.active {
+            background-color: #556b8e;
+        }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .card {
+      background: #ffffff;
+      color: #000000;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .card-header {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .card-section {
+      margin-bottom: 15px;
+    }
+    .card-section h3 {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      color: #1a237e;
+    }
+    .card-section p {
+      margin: 5px 0;
+    }
+    .actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .actions button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 0 10px;
+    }
+    .actions .approve {
+      background-color: #4caf50; /* Green */
+      color: white;
+    }
+    .actions .approve:hover {
+      background-color: #388e3c;
+    }
+    .actions .deny {
+      background-color: #f44336; /* Red */
+      color: white;
+    }
+    .actions .deny:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidenav">
+        <a a=active href="AdminHome.html">Home</a>
+        <a href="CreateEvent.html">Create Events</a>
+        <a href="RequestEvents.html">Request</a>
+        <a href="SearchEvent.html">Search Events</a>
+        <a href="PAHours.html">PA Hours</a>
+        <a href="EditAccounts.html">Edit Accounts</a>    
+    </div>
+    <div class="card">
+      <div class="card-header">Event Request</div>
+      <div class="card-section">
+        <h3>Timing</h3>
+        <p><strong>Start Time:</strong> 10:00 AM</p>
+        <p><strong>End Time:</strong> 2:00 PM</p>
+        <p><strong>Date:</strong> January 15, 2025</p>
+      </div>
+      <div class="card-section">
+        <h3>Location & Details</h3>
+        <p><strong>Location:</strong> Main Hall</p>
+        <p><strong>Attire:</strong> Business Casual</p>
+        <p><strong>Description:</strong> This event is a team-building workshop for PAs to enhance communication and collaboration skills.</p>
+        <p><strong>Number of PAs:</strong> 5</p>
+      </div>
+      <div class="card-section">
+        <h3>Point of Contact</h3>
+        <p><strong>Name:</strong> Jane Doe</p>
+        <p><strong>Office:</strong> 123-456-7890</p>
+        <p><strong>Title:</strong> Event Coordinator</p>
+      </div>
+      <div class="actions">
+        <button class="approve">Approve</button>
+        <button class="deny">Deny</button>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">Event Request</div>
+      <div class="card-section">
+        <h3>Timing</h3>
+        <p><strong>Start Time:</strong> 10:00 AM</p>
+        <p><strong>End Time:</strong> 2:00 PM</p>
+        <p><strong>Date:</strong> January 15, 2025</p>
+      </div>
+      <div class="card-section">
+        <h3>Location & Details</h3>
+        <p><strong>Location:</strong> Main Hall</p>
+        <p><strong>Attire:</strong> Business Casual</p>
+        <p><strong>Description:</strong> This event is a team-building workshop for PAs to enhance communication and collaboration skills.</p>
+        <p><strong>Number of PAs:</strong> 5</p>
+      </div>
+      <div class="card-section">
+        <h3>Point of Contact</h3>
+        <p><strong>Name:</strong> Jane Doe</p>
+        <p><strong>Office:</strong> 123-456-7890</p>
+        <p><strong>Title:</strong> Event Coordinator</p>
+      </div>
+      <div class="actions">
+        <button class="approve">Approve</button>
+        <button class="deny">Deny</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+                /* Sidebar Styling */
+                .sidenav {
+            height: 100%;
+            width: 160px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #030518;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .sidenav a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #a39d9d;
+            display: block;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .request-card {
+            background: #f4f4f9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .request-card .details {
+            margin-bottom: 10px;
+        }
+
+        .request-card .details span {
+            display: block;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button.approve {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button.reject {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidenav">
+        <a a=active href="AdminHome.html">Home</a>
+        <a href="CreateEvent.html">Create Events</a>
+        <a href="RequestEvents.html">Request Events</a>
+        <a href="SearchEvent.html">Search Events</a>
+        <a href="RequestApprovalHours.html">Approval Hours</a>
+        <a href="PAHours.html">PA Hours</a>
+        <a href="EditAccounts.html">Edit Accounts</a>
+  </div>
+
+<h1>Approve Hour Changes</h1>
+<div class="container" id="requestsContainer">
+    <!-- Example Request 1 -->
+    <div class="request-card" id="request-1">
+        <div class="details">
+            <span><strong>Name:</strong> John Doe</span>
+            <span><strong>Event:</strong> Community Cleanup</span>
+            <span><strong>Date:</strong> Nov 12, 2024</span>
+            <span><strong>Original Hours:</strong> 3 hours</span>
+            <span><strong>Proposed Hours:</strong> 4 hours</span>
+            <span><strong>Reasoning:</strong> Stayed an extra hour to finish cleaning the park.</span>
+        </div>
+        <div class="button-group">
+            <button class="approve" onclick="approveRequest('request-1')">Approve</button>
+            <button class="reject" onclick="rejectRequest('request-1')">Reject</button>
+        </div>
+    </div>
+
+    <!-- Example Request 2 -->
+    <div class="request-card" id="request-2">
+        <div class="details">
+            <span><strong>Name:</strong> Jane Smith</span>
+            <span><strong>Event:</strong> Food Bank Assistance</span>
+            <span><strong>Date:</strong> Nov 10, 2024</span>
+            <span><strong>Original Hours:</strong> 5 hours</span>
+            <span><strong>Proposed Hours:</strong> 4 hours</span>
+            <span><strong>Reasoning:</strong> Arrived an hour late due to transportation issues.</span>
+        </div>
+        <div class="button-group">
+            <button class="approve" onclick="approveRequest('request-2')">Approve</button>
+            <button class="reject" onclick="rejectRequest('request-2')">Reject</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Handle Approve Request
+    function approveRequest(requestId) {
+        const requestCard = document.getElementById(requestId);
+        alert('Request approved.');
+        requestCard.style.backgroundColor = '#d4edda'; // Green background to indicate approval
+        disableButtons(requestCard);
+    }
+
+    // Handle Reject Request
+    function rejectRequest(requestId) {
+        const requestCard = document.getElementById(requestId);
+        alert('Request rejected.');
+        requestCard.style.backgroundColor = '#f8d7da'; // Red background to indicate rejection
+        disableButtons(requestCard);
+    }
+
+    // Disable buttons after a decision is made
+    function disableButtons(requestCard) {
+        const buttons = requestCard.querySelectorAll('button');
+        buttons.forEach(button => button.disabled = true);
+    }
+</script>
+
+</body>
+</html>

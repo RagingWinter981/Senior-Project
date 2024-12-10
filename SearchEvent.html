@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            background-color: #ffffff;
+            padding: 1%;
+        }
+
+        .main {
+            margin-left: 160px; /* Sidebar width */
+            font-size: 20px;
+            padding: 0 10px;
+            margin-top: 20px;
+        }
+
+        .main input,
+        .main select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .toptab {
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        .toptab button {
+            float: right;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            transition: 0.3s;
+        }
+
+        .toptab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Sidebar Styling */
+        .sidenav {
+            height: 100%;
+            width: 160px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #030518;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .sidenav a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #a39d9d;
+            display: block;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-left: 180px;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            margin: 0;
+            color: #000;
+        }
+
+        .card p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .gear-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .gear-btn i {
+            color: #555;
+        }
+
+        .gear-btn:hover i {
+            color: #000;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 720px) {
+            .card-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="toptab">
+        <button>Log Out</button>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidenav">
+      <a a=active href="AdminHome.html">Home</a>
+      <a href="CreateEvent.html">Create Events</a>
+      <a href="RequestEvents.html">Request Events</a>
+      <a href="SearchEvent.html">Search Events</a>
+      <a href="RequestApprovalHours.html">Approval Hours</a>
+      <a href="PAHours.html">PA Hours</a>
+      <a href="EditAccounts.html">Edit Accounts</a>
+</div>
+    <!-- Main Content -->
+    <div class="main">
+        <h1>Event Management</h1>
+
+        <!-- Advanced Search Section -->
+        <div class="search-bar">
+            <input type="text" placeholder="Search by Name">
+            <select>
+                <option value="">Filter by Availability</option>
+                <option value="available">Available Spots</option>
+                <option value="full">Full</option>
+            </select>
+            <input type="date" placeholder="Filter by Date">
+        </div>
+    </div>
+
+    <!-- Cards Section -->
+    <div class="card-container">
+        <!-- Event Card -->
+        <div class="card">
+            <h2>Event Name</h2>
+            <p><strong>Date:</strong> Tues, Nov 11, 2024</p>
+            <p><strong>Availability:</strong> 4/8 Spots Open</p>
+            <button class="gear-btn"><i class="fas fa-cog"></i></button>
+        </div>
+
+        <div class="card">
+            <h2>Event Name</h2>
+            <p><strong>Date:</strong> Tues, Nov 12, 2024</p>
+            <p><strong>Availability:</strong> 2/10 Spots Open</p>
+            <button class="gear-btn"><i class="fas fa-cog"></i></button>
+        </div>
+
+        <div class="card">
+            <h2>Event Name</h2>
+            <p><strong>Date:</strong> Tues, Nov 13, 2024</p>
+            <p><strong>Availability:</strong> 5/5 Spots Open</p>
+            <button class="gear-btn"><i class="fas fa-cog"></i></button>
+        </div>
+    </div>
+
+    <!-- Include FontAwesome for gear icon -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
