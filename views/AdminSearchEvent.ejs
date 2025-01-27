@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<%- include('header') %>
+<html>
+<head>
+<style>
+    /* General Styling */
+/* Search Bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 80%;
+    height: 50px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 0 20px;
+    margin: 20px auto;
+}
+.search-bar p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+.search-bar input, .search-bar select {
+    font-size: 14px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 150px;
+}
+/* Card Styling */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    padding: 20px;
+    position: relative;
+}
+.card h2 {
+    font-size: 18px;
+    margin: 0 0 10px;
+    color: #444;
+}
+.card p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #555;
+}
+.card-section {
+    margin-bottom: 15px;
+}
+.card-section h3 {
+    font-size: 16px;
+    color: #222;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+.card-section p {
+    margin: 4px 0;
+}
+.btn-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+button {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between icon and text */
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  outline: none;
+}
+button i.material-icons {
+  font-size: 20px;
+}
+
+.edit-btn {
+  background-color: #00796b; /* Dark teal */
+  color: #ffffff; /* White text */
+}
+
+.edit-btn:hover {
+  background-color: #004d40; /* Deeper teal */
+}
+
+.delete-btn {
+  background-color: #c62828; /* Dark red */
+  color: #ffffff; /* White text */
+}
+
+.delete-btn:hover {
+  background-color: #8e0000; /* Deeper red */
+}
+
+button:active {
+  transform: scale(0.98); /* Slight shrink on click */
+}
+    </style>
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Search Events</h1>
+        <p> Here you can search through events or filter by relevant information. Once you have found your event, you can click to learn more, edit the event, or even delete it.</p>
+
+        <!-- Advanced Search Section -->
+        <div class="search-bar">
+            <p>Name of Event:</p>
+            <input type="text" placeholder="Search by Name">
+            <p>Availability:</p>
+            <select>
+                <option value="">Filter by Availability</option>
+                <option value="available">Available Spots</option>
+                <option value="full">Full</option>
+            </select>
+            <p>Date of Event:</p>
+            <input type="date" placeholder="Filter by Date">
+        </div>
+    </div>
+
+<!-- Cards Section -->
+<div class="card-container">
+    <% events.forEach((row) => { %>
+        <div class="card">
+            <h2><%= row.EventName %></h2>
+
+            <!-- Time Details Section -->
+            <div class="card-section">
+                <h3>Event Timing</h3>
+                <p><strong>Report Time:</strong> <%= moment(row.DateReportTime).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+                <p><strong>Start:</strong> <%= moment(row.DateStart).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+                <p><strong>End:</strong> <%= moment(row.DateEnd).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+                <p><strong>Adjusted Time:</strong> <%= row.AdjustedTime %> min</p>
+            </div>
+
+            <!-- PA Details Section -->
+            <div class="card-section">
+                <h3>PA Information</h3>
+                <p><strong>Location:</strong> <%= row.Location %></p>
+                <p><strong>Attire:</strong> <%= row.Attire %></p>
+                <p><strong>Credit Hours:</strong> <%= row.NumOfHours %> &nbsp; <strong>Number of Spots:</strong> <%= row.NumOfPAs %></p>                
+            </div>
+
+            <!-- PA Coordinator Details Section -->
+            <div class="card-section">
+                <h3>PA Coordinator</h3>
+                <p><strong>Name:</strong> <%= row.PACoordinatorName %></p>
+                <p><strong>Office:</strong> <%= row.PACoordinatorOffice %></p>
+                <p><strong>Title:</strong> <%= row.PACoordinatorTitle %></p>
+            </div>
+
+            <!-- Description Section -->
+            <div class="card-section">
+                <h3>Description</h3>
+                <p><%= row.Description %></p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-container">
+                <button class="edit-btn">
+                    <i class="material-icons">edit</i>
+                    <a href='/edit/<%= row._id %>'>edit</a>
+                </button>
+                <button class="delete-btn">
+                    <i class="material-icons">delete</i>
+                </button>
+            </div>
+        </div>
+    <% }) %>
+</div>
+<!-- <div class ="main-content"> 
+    <!-- % if (events != ''){%>  -->
+            <!-- Cards Section --
+    <div class="card-container">
+        
+        % events.forEach((row, index) => { %>
+            <div class="card">
+                <h2>%= row.EventName %></h2>
+                <p><strong>Event Start:</strong> %= row.DateStart %></p>
+                <p><strong>Event End:</strong> %= row.DateEnd %></p>
+                <p><strong>Report Time:</strong> %= row.DateReportTime %></p>
+                <p><strong>+/-: </strong> %= row.AdjustedTime %> min</p>
+                <p><strong>Number of Hours: </strong> %= row.NumOfHours %> </p>
+                <p><strong>Location: </strong> %= row.Location %></p>
+                <p><strong>Attire: </strong>%= row.Attire %></p>
+                <p><strong>PA Coordinator: </strong>%= row.PACoordinatorName %></p>
+                <p><strong>PA Coordinator Office: </strong>%= row.PACoordinatorOffice %></p>
+                <p><strong>PA Coordinator Title: </strong>%= row.PACoordinatorTitle %></p>                
+                <p><strong>Number of Spots:</strong>%= row.NumOfPAs %></p>
+                <p><strong>Description: </strong>%= row.Description %></p>
+                <div class="btn-container">
+                    <button class="edit-btn">
+                        <i class="material-icons">edit</i><a href='/edit/%= row._id %>'></a>
+                    </button>
+                    <button class="delete-btn">
+                        <i class="material-icons">delete</i><a href='/delete/%= row._id %>'></a>
+                    </button>
+                </div>
+        </div>
+        % }) %>
+    </div>
+        
+        %}else { %>
+            <h1> No Dates Found </h1>
+        % } %>
+</div>
+ -->
+
+
+    <!-- Include FontAwesome for gear icon -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
