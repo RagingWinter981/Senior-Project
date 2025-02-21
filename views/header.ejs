@@ -48,23 +48,29 @@
       color: #fff;
     }
 
-    /* Logout Button */
-    .btn-outline-danger {
-      height: auto;
-      width: auto;
-      background-color: #007bff;
-      border: 2px solid #007bff;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 25px;
-      transition: background-color 0.3s, border-color 0.3s;
-      font-size: 14px;
-    }
+   /* Logout Button */
+.btn-outline-danger {
+  height: auto;  /* Set height to auto for dynamic content */
+  width: auto;   /* Let width adjust to content */
+  margin-top: 10px;
+  margin-bottom: 20px;
+  background-color: #dc3545;  /* Bootstrap's danger color */
+  border: 2px solid #dc3545;  /* Bootstrap's danger border */
+  color: white;
+  padding: 8px 20px;  /* Adjust padding for better appearance */
+  border-radius: 25px;
+  transition: background-color 0.3s, border-color 0.3s;
+  font-size: 14px;
+  text-align: center;
+  display: inline-block;  /* Ensure it's inline with text */
+  text-decoration: none;  /* Remove underline */
+}
 
-    .btn-outline-danger:hover {
-      background-color: #0056b3;
-      border-color: #0056b3;
-    }
+.btn-outline-danger:hover {
+  background-color: #c82333;  /* Darker red when hovered */
+  border-color: #c82333;  /* Darker red for border on hover */
+}
+
 
   .sidenav {
     height: 100%; /* Full-height: remove this if you want "auto" height */
@@ -215,7 +221,7 @@
   <body>
   <header>
     <div class="navbar">
-      <button class="btn-outline-danger">Log Out</button>
+      <a href="/Logout" class="btn-outline-danger">Log Out</a>
     </div>
       <div class="sidenav">
         <img src="/images/StMarysUniversity.png" style="width:50px;height:50px;" class="logo-icon">
@@ -229,7 +235,7 @@
           <li><a href="/allEvents"><span class="material-icons">search</span>Search Events</a></li>
           <li><a href="RequestApprovalHours.html"><span class="material-icons">event_available</span> Approval Hours</a></li>
           <li><a href="PAHours.html"><span class="material-icons"> groups </span> PA Hours</a></li>
-          <li><a href="EditAccounts.html"><span class="material-icons"> manage_accounts </span> Manage Accounts</a></li>
+          <li><a href="/accounts"><span class="material-icons"> manage_accounts </span> Manage Accounts</a></li>
           <div class="active"></div>
         </ul>
       </div>

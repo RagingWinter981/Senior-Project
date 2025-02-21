@@ -7,50 +7,50 @@ async function main(){
   try{
     await client.connect();
 
-    //inserting one event
-    // await listDatabases(client);
-    // createEvent(client, {
-    //   EventName: "President Ambassador Social",
-    //   NumOfHours: 2,
-    //   Location: "One Camino Santa Maria, San Antonio, TX, 78228",
-    //   DateStart: "2025-01-31-T12:00:00",
-    //   EndTime: "2025-01-31-T14:00:00",
-    //   NumOfPAs: 30,
-    //   PACoordinator: "Allison Grijalva",
-    //   ReportTime: "2025-01-31-T11:30:00",
-    //   AdjustedTime: 30,
-    //   Description: "Meet all Alumni PAs!"
-    // })
+    // inserting one event
+    await listDatabases(client);
+    createEvent(client, {
+      EventName: "President Ambassador Social",
+      NumOfHours: 2,
+      Location: "One Camino Santa Maria, San Antonio, TX, 78228",
+      DateStart: "2025-01-31-T12:00:00",
+      EndTime: "2025-01-31-T14:00:00",
+      NumOfPAs: 30,
+      PACoordinator: "Allison Grijalva",
+      ReportTime: "2025-01-31-T11:30:00",
+      AdjustedTime: 30,
+      Description: "Meet all Alumni PAs!"
+    })
 
     //inserting multiple events
-    // await createMultipleEvents(client, [
-    //   {
-    //     EventName: "Boo Bash",
-    //     NumOfHours: 1,
-    //     Location: "One Camino Santa Maria, San Antonio, TX, 78228",
-    //     DateStart: "2025-10-31-T19:00:00",
-    //     EndTime: "2025-10-31-T20:00:00",
-    //     NumOfPAs: 4,
-    //     PACoordinator: "Allison Grijalva",
-    //     ReportTime: "2025-10-31-T18:45:00",
-    //     AdjustedTime: 15,
-    //     Description: "Assist with President Ambassador booth at Boo Bash"
-    //   },
-    //   {
-    //     EventName: "Spring Fun Run",
-    //     NumOfHours: 7,
-    //     Location: "One Camino Santa Maria, San Antonio, TX, 78228",
-    //     DateStart: "2025-03-14-T9:00:00",
-    //     EndTime: "2025-03-14-T16:00:00",
-    //     NumOfPAs: 30,
-    //     PACoordinator: "Allison Grijalva",
-    //     ReportTime: "2025-03-14-T8:30:00",
-    //     AdjustedTime: 30,
-    //     Description: "Set up for the Spring 5K"
-    //   }]
-    // );
+    await createMultipleEvents(client, [
+      {
+        EventName: "Boo Bash",
+        NumOfHours: 1,
+        Location: "One Camino Santa Maria, San Antonio, TX, 78228",
+        DateStart: "2025-10-31-T19:00:00",
+        EndTime: "2025-10-31-T20:00:00",
+        NumOfPAs: 4,
+        PACoordinator: "Allison Grijalva",
+        ReportTime: "2025-10-31-T18:45:00",
+        AdjustedTime: 15,
+        Description: "Assist with President Ambassador booth at Boo Bash"
+      },
+      {
+        EventName: "Spring Fun Run",
+        NumOfHours: 7,
+        Location: "One Camino Santa Maria, San Antonio, TX, 78228",
+        DateStart: "2025-03-14-T9:00:00",
+        EndTime: "2025-03-14-T16:00:00",
+        NumOfPAs: 30,
+        PACoordinator: "Allison Grijalva",
+        ReportTime: "2025-03-14-T8:30:00",
+        AdjustedTime: 30,
+        Description: "Set up for the Spring 5K"
+      }]
+    );
 
-    // await findOneEventByName(client, "Boo Bash")
+    await findOneEventByName(client, "Boo Bash")
 
     await FindEventsMinHoursMinPAs(client, {minHours: 3, minPAs: 3});
 

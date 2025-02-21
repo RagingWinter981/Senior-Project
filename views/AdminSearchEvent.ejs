@@ -88,14 +88,27 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
   outline: none;
+  
 }
 button i.material-icons {
   font-size: 20px;
 }
 
 .edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between icon and text */
+  padding: 10px 16px;
+  /* font-size: 16px; */
+  /* font-weight: 500; */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  outline: none;
   background-color: #00796b; /* Dark teal */
   color: #ffffff; /* White text */
+  text-decoration: none; /* Removes underline */
 }
 
 .edit-btn:hover {
@@ -103,8 +116,20 @@ button i.material-icons {
 }
 
 .delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between icon and text */
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  outline: none;
   background-color: #c62828; /* Dark red */
   color: #ffffff; /* White text */
+  text-decoration: none; /* Removes underline */
 }
 
 .delete-btn:hover {
@@ -176,57 +201,16 @@ button:active {
 
             <!-- Buttons -->
             <div class="btn-container">
-                <button class="edit-btn">
+                <a href='/edit/<%= row._id %>' class="edit-btn">
                     <i class="material-icons">edit</i>
-                    <a href='/edit/<%= row._id %>'>edit</a>
-                </button>
-                <button class="delete-btn">
+                </a>
+ 
+                <a href='/delete/<%= row._id %>' class="delete-btn">
                     <i class="material-icons">delete</i>
-                </button>
+                </a>
             </div>
         </div>
     <% }) %>
 </div>
-<!-- <div class ="main-content"> 
-    <!-- % if (events != ''){%>  -->
-            <!-- Cards Section --
-    <div class="card-container">
-        
-        % events.forEach((row, index) => { %>
-            <div class="card">
-                <h2>%= row.EventName %></h2>
-                <p><strong>Event Start:</strong> %= row.DateStart %></p>
-                <p><strong>Event End:</strong> %= row.DateEnd %></p>
-                <p><strong>Report Time:</strong> %= row.DateReportTime %></p>
-                <p><strong>+/-: </strong> %= row.AdjustedTime %> min</p>
-                <p><strong>Number of Hours: </strong> %= row.NumOfHours %> </p>
-                <p><strong>Location: </strong> %= row.Location %></p>
-                <p><strong>Attire: </strong>%= row.Attire %></p>
-                <p><strong>PA Coordinator: </strong>%= row.PACoordinatorName %></p>
-                <p><strong>PA Coordinator Office: </strong>%= row.PACoordinatorOffice %></p>
-                <p><strong>PA Coordinator Title: </strong>%= row.PACoordinatorTitle %></p>                
-                <p><strong>Number of Spots:</strong>%= row.NumOfPAs %></p>
-                <p><strong>Description: </strong>%= row.Description %></p>
-                <div class="btn-container">
-                    <button class="edit-btn">
-                        <i class="material-icons">edit</i><a href='/edit/%= row._id %>'></a>
-                    </button>
-                    <button class="delete-btn">
-                        <i class="material-icons">delete</i><a href='/delete/%= row._id %>'></a>
-                    </button>
-                </div>
-        </div>
-        % }) %>
-    </div>
-        
-        %}else { %>
-            <h1> No Dates Found </h1>
-        % } %>
-</div>
- -->
-
-
-    <!-- Include FontAwesome for gear icon -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
