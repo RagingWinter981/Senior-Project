@@ -91,6 +91,14 @@
         .additional-links a:hover {
             text-decoration: underline;
         }
+        .logo {
+    display: block;  /* Make it visible */
+    margin: 0 auto;
+    margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
     </style>
 <html lang="en">
 <head>
@@ -102,7 +110,10 @@
 <body>
     <div class="login-container">
         <div class="login-form">
-            <h1>President Ambassador</h1> <h1>Login Page</h1>
+            
+            <img src="/images/PresidentAmbassadors.jpg" style="width:200px;height:200px;" class="logo">
+            <h1>President Ambassador</h1>
+            <h1>Login Page</h1>
             <form id='login-form' action="/login" method="POST">
                 <div class="form-group">
                     <label for="UserName">Username</label>
@@ -118,10 +129,10 @@
                 <a href="AdminHome.html">Forgot Password?</a>
             </div>
             <div class="additional-links">
-                <a href="paHome.html">Interested in becoming A PA?</a>
+                <a href="https://www.stmarytx.edu/about/leadership/president/presidents-ambassadors/">Interested in becoming A PA?</a>
             </div>
             <div class="additional-links">
-                <a href="RequestNewEvent.html">Request an event?</a>
+                <a href="/RequestAnEvent">Request an event?</a>
             </div>
         </div>
     </div>

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<%- include('paheader') %>
+<html>
+<head>
+    <style>
+        /* General Styling */
+        
+
+/* Container Styling */
+.hours-container {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+    margin-right: 5%
+    /* max-width: 800px; */
+    /* width: 100%; */
+}
+
+/* Title */
+.hours-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Table Styling */
+.hours-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.hours-table thead {
+    background: #f39c12;
+    color: #fff;
+}
+
+.hours-table th, .hours-table td {
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.hours-table tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+/* Hover Effect */
+.hours-table tbody tr:hover {
+    background: #fce4b8;
+    transition: background 0.3s ease;
+}
+
+.Approve-btn {
+    background-color: #4CAF50; /* Soft green */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.Approve-btn:hover {
+    background-color: #45A049; /* Slightly darker green */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.Approve-btn:active {
+    background-color: #3E8E41;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(2px);
+}
+
+.cancel-btn {
+    background-color: #ea2222; /* Soft blue-purple */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.cancel-btn:hover {
+    background-color: #920d0d; /* Slightly darker shade */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cancel-btn:active {
+    background-color: #e55252;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(2px);
+}
+.Request-cancel-btn {
+    background-color: #6f1111; /* Soft blue-purple */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.Request-cancel-btn:hover {
+    background-color: #320404; /* Slightly darker shade */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.Request-cancel-btn:active {
+    background-color: #451616;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(2px);
+}
+
+.Adjust-btn {
+    background-color: #6C63FF; /* Soft blue-purple */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.Adjust-btn:hover {
+    background-color: #5A54E8; /* Slightly darker shade */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.Adjust-btn:active {
+    background-color: #4C46CC;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(2px);
+}
+/* The Modal (background) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); 
+    backdrop-filter: blur(8px); /* Modern blur effect */
+    padding-top: 60px;
+}
+
+/* Modal Content */
+.modal-content {
+    background: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Close Button */
+.close {
+    color: #555;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #f44336;
+}
+
+/* Form Groups */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: #4CAF50; /* Highlight on focus */
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn-submit, .btn-cancel {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.btn-submit {
+    background: #4CAF50;
+    color: #fff;
+}
+
+.btn-cancel {
+    background: #f44336;
+    color: #fff;
+}
+
+.btn-submit:hover {
+    background: #45a049;
+}
+
+.btn-cancel:hover {
+    background: #e53935;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Styling for form elements */
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background-color: #6C63FF; /* Soft blue-purple */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #5A54E8;
+}
+
+        /* Add media queries for smaller screens */
+        @media screen and (max-width:720px) {
+            .main-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .sidenav {padding-top: 15px;}
+            .sidenav a {font-size: 18px;}
+
+            .card-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Check Hours </h1>
+
+<!-- Main Content Section: Tabs and Cards side-by-side -->
+<div class="main-content">
+    <!-- Tab Section -->
+    <div class="hours-container">
+        <h1>President Ambassador Hours</h1>
+        <p>Here you can view your hours, edit your hours, and see what events you have signed up for</p>
+        <br>
+
+        <h2>Approved Hours</h2>
+        <table class="hours-table">
+            <thead>
+                <tr>
+                    <th>Event Name</th>
+                    <th>Date</th>
+                    <th>Hours Worked</th>
+                    <th>Reasoning</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% hoursData.forEach(hour => { %>
+                    <% 
+                        // Find the event in completedEvents
+                        const event = ApprovedEvents.find(event => event._id.toString() === hour.EventID.toString());
+                        if (event) { 
+                    %>
+                    <tr>
+                        <td><%= event.EventName %></td>
+                        <td><%= new Date(event.DateReportTime).toLocaleDateString('en-US') %></td>
+                        <td><%= hour.HoursEarned %></td>
+                        <td><%= hour.Reasoning %></td>
+                        <td><%= hour.Approval %>
+                    </tr>
+                    <% } %>
+             <% }) %>
+            </tbody>
+        </table>
+
+        <br>
+
+        <!-- Completed Hours Table -->
+        <h2>Pending Hours</h2>
+        <table class="hours-table">
+            <thead>
+                <tr>
+                    <th>Event Name</th>
+                    <th>Date</th>
+                    <th>Hours Worked</th>
+                    <th>Reasoning</th>
+                    <th>Status</th>
+                    <th style="width:30%">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% hoursData.forEach(hour => { %>
+                    <% 
+                        // Find the event in completedEvents
+                        const event = PendingEvents.find(event => event._id.toString() === hour.EventID.toString());
+                        if (event) { 
+                    %>
+                    <tr>
+                        <td><%= event.EventName %></td>
+                        <td><%= new Date(event.DateReportTime).toLocaleDateString('en-US') %></td>
+                        <td><%= hour.HoursEarned %></td>
+                        <td><%= hour.Reasoning %></td>
+                        <td><%= hour.Approval || 'Submit for approval' %></td>
+                        <td> 
+                        <% if (hour.Approval !== "Waiting for Approval" ) { %>
+                            <a href="#" class="Approve-btn" data-hour-id="<%= hour._id %>">Request Approval</a>
+                            <a href="#" class="Adjust-btn" data-hour-id="<%= hour._id %>">Adjust Hours</a>
+                        <% } %>
+                </td>
+            </tr>
+            <% } %>
+        <% }) %>
+    </tbody>
+</table>
+
+<br>
+
+        <h2>Upcoming Hours</h2>
+        <table class="hours-table">
+            <thead>
+                <tr>
+                    <th>Event Name</th>
+                    <th>Date</th>
+                    <th>Hours Worked</th>
+                    <th>Reasoning</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% hoursData.forEach(hour => { %>
+                    <% 
+                        // Find the event in futureEvents
+                        const event = futureEvents.find(event => event._id.toString() === hour.EventID.toString());
+                        if (event) { 
+                    %>
+                    <tr>
+                        <td><%= event.EventName %></td>
+                        <td><%= new Date(event.DateReportTime).toDateString() %></td>
+                        <td><%= hour.HoursEarned %></td>
+                        <td><%= hour.Reasoning %></td>
+                        <td>
+                            <% if (moment(event.DateReportTime).isSameOrAfter(moment().add(2,'weeks'))) { %>
+                                <a href="#" class="cancel-btn" data-hour-id="<%= hour._id %>">Cancel</a>
+                            <% } else {%>
+                                <a href="#" class="Request-cancel-btn" data-hour-id="<%= hour._id %>">Request to Cancel</a>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% } %>
+                <% }) %>
+            </tbody>
+        </table>
+
+
+
+<!--*************************-->
+<!--        Modals -->
+<!--*************************-->
+
+<!-- Modal for Approval Hours -->
+<div id="approvalModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Approve Hours</h2>
+        <form action="/submitApprovalHours" method="POST">
+            <br>
+            <text> I believe I met the credit hours for the event</text>
+            <br><br>
+            <input type="hidden" id="hourId" name="hourId">
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for Adjusting Hours -->
+<div id="adjustModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Adjust Hours</h2>
+        <form action="/submitAdjustedHours" method="POST">
+
+            <p>Please enter the <strong>TOTAL</strong> hours you believe you have worked:</p>
+            <div class="form-group">
+                <label for="hours">Adjusted Hours:</label>
+                <input type="number" id="hours" name="hours" required>
+            </div>
+
+            <p>Explain why you earned your desired amount of hours:</p>
+            <div class="form-group">
+                <label for="reasoning">Reasoning:</label>
+                <textarea id="reasoning" name="reasoning" required></textarea>
+            </div>
+
+            <input type="hidden" id="hourId" name="hourId">
+
+            <div class="button-group">
+                <button type="submit" class="btn-submit">Submit</button>
+                <button type="button" class="btn-cancel" onclick="document.getElementById('adjustModal').style.display='none'">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for Cancelling Hours -->
+    <div id="cancelModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span> 
+        <h2>Cancel Registration</h2>
+        <form action="/DeleteEventHours" method="POST">
+            <h1>Are you sure you want to cancel?</h1>
+            <!-- Hidden input to store the hour ID -->
+            <input type="hidden" id="hourId" name="hourId">
+            <button type="button" onclick="cancelModal.style.display='none'">Back</button>
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for Requesting Cancel Hours -->
+    <div id="RequestcancelModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span> 
+        <h2>Cancel Registration</h2>
+        <form action="/submitRequestCancelHours" method="POST">
+            <h1>Are you sure you want to request to cancel?</h1>
+            <p>Note: This does not mean you have been approved to cancel</p>
+            <!-- Hidden input to store the hour ID -->
+            <input type="hidden" id="hourId" name="hourId">
+            <button type="button" onclick="RequestcancelModal.style.display='none'">Back</button>
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- *********************** -->
+<!-- Script logic for Modals -->
+<!-- *********************** -->
+<script>
+    // Approval modal logic
+    const Approvalmodal = document.getElementById("approvalModal");
+    const approvalButtons = document.querySelectorAll(".Approve-btn");
+    const closeApproval = document.querySelector("#approvalModal .close");
+
+    approvalButtons.forEach(button => {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            
+            const hourId = event.target.getAttribute("data-hour-id");
+            document.querySelector("#approvalModal #hourId").value = hourId;
+
+            // Open the correct modal
+            Approvalmodal.style.display = "block";
+        });
+    });
+
+    closeApproval.addEventListener("click", function() {
+        Approvalmodal.style.display = "none";
+    });
+
+    window.addEventListener("click", function(event) {
+        if (event.target === Approvalmodal) {
+            Approvalmodal.style.display = "none";
+        }
+    });
+
+    // Adjust modal logic
+    const Adjustmodal = document.getElementById("adjustModal");
+    const adjustButtons = document.querySelectorAll(".Adjust-btn");
+    const closeAdjust = document.querySelector("#adjustModal .close");
+
+    adjustButtons.forEach(button => {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            
+            const hourId = event.target.getAttribute("data-hour-id");
+            document.querySelector("#adjustModal #hourId").value = hourId;
+
+            // Open the correct modal
+            Adjustmodal.style.display = "block";
+        });
+    });
+
+    closeAdjust.addEventListener("click", function() {
+        Adjustmodal.style.display = "none";
+    });
+
+    window.addEventListener("click", function(event) {
+        if (event.target === Adjustmodal) {
+            Adjustmodal.style.display = "none";
+        }
+    });
+
+    // Cancel modal logic
+    const cancelModal = document.getElementById("cancelModal");
+    const cancelButtons = document.querySelectorAll(".cancel-btn");
+    const closeCancel = document.querySelector("#cancelModal .close");
+
+    cancelButtons.forEach(button => {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            
+            const hourId = event.target.getAttribute("data-hour-id");
+            document.querySelector("#cancelModal #hourId").value = hourId;
+
+            // Open the correct modal
+            cancelModal.style.display = "block";
+        });
+    });
+
+    closeCancel.addEventListener("click", function() {
+        cancelModal.style.display = "none";
+    });
+
+    window.addEventListener("click", function(event) {
+        if (event.target === cancelModal) {
+            cancelModal.style.display = "none";
+        }
+    });
+
+    //Request to Cancel Modal
+    const RequestcancelModal = document.getElementById("RequestcancelModal");
+    const requestcancelButtons = document.querySelectorAll(".Request-cancel-btn");
+    const requestcloseCancel = document.querySelector("#RequestcancelModal .close");
+
+    requestcancelButtons.forEach(button => {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            
+            const hourId = event.target.getAttribute("data-hour-id");
+            document.querySelector("#RequestcancelModal #hourId").value = hourId;
+
+            // Open the correct modal
+            RequestcancelModal.style.display = "block";
+        });
+    });
+
+    requestcloseCancel.addEventListener("click", function() {
+        RequestcancelModal.style.display = "none";
+    });
+
+    window.addEventListener("click", function(event) {
+        if (event.target === RequestcancelModal) {
+            RequestcancelModal.style.display = "none";
+        }
+    });
+</script>
+
+</div>
+</div>
+
+</html>
+
+</div>
+
+
+</body>
+</html>

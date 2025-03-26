@@ -7,7 +7,7 @@ exports.adminCheckLoggedIn = (req,res,next) =>{
 }
 
 exports.paCheckLoggedIn = (req,res,next) =>{
-  if(req.session.user && eq.session.user.type === 'President Ambassador'){//&& req.body.UserName =='Admin' ){
+  if(req.session.user && req.session.user.type === 'President Ambassador'){//&& req.body.UserName =='Admin' ){
     next()
   }else{
     res.render('index')

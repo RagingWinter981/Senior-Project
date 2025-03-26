@@ -1,3 +1,4 @@
+<%- include('paheader') %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,77 +6,40 @@
         /* General Styling */
         body {
             font-family: Arial, sans-serif;
-            margin: 1;
+            margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
             background-color: #ffffff;
             height: 100vh;
         }
+
         h1 {
-            /* margin-top: //20px; */
-            color: #333;
             text-align: center;
-            background-color: #ffffff;
-            padding: 1%;
-        }
-        .headerfont {
-            color: #333;
-            text-align: left;
-            background-color: #ffffff;
-            font-size: 30px;
-            font-weight: bold;
         }
 
-        /* Tabs styling */
-        .sidenav {
-            height: 100%; /* Full-height: remove this if you want "auto" height */
-            width: 160px; /* Set the width of the sidebar */
-            position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-            z-index: 1; /* Stay on top */
-            top: 0; /* Stay at the top */
-            left: 0;
-            background-color: #030518; /* Black */
-            overflow-x: hidden; /* Disable horizontal scroll */
-            padding-top: 100px;
-        }
-
-        .sidenav a {
-            padding: 6px 8px 6px 16px;
-            text-decoration: none;
-            font-size: 18px;
-            color: #a39d9d;
-            display: block;
-        }
-
-        .sidenav a:hover {
-                color: #f1f1f1;
-            }
-
-        .sidenav a.active {
-            background-color: #556b8e;
+        /* Main container for cards and calendar */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
         }
 
         /* Card container styling */
         .card-container {
             display: flex;
             gap: 20px;
-            margin-left: 17%;
-            padding-right: 10%;
-            padding-top:2%;
-            /* align-content: right; */
-
+            justify-content: center;
+            width: 100%;
         }
 
         .card {
             background-color: #fff;
             border-radius: 8px;
-            border-style: solid;
-            border-color: #807e7e;
-            box-shadow: 10px 4px 8px rgba(0.2, 0.2, 0.2, 0.2);
+            border: 1px solid #807e7e;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
             width: 25%;
             padding: 20px;
-            text-align: left;
             transition: transform 0.3s ease-in-out;
         }
 
@@ -83,104 +47,142 @@
             transform: translateY(-10px);
         }
 
-        .card h2 {
-            color: #000000;
+        .card h2, .card p {
+            color: #000;
         }
 
-        .card p {
-            color: #000000;
-            font-size: 14px;
+        /* Calendar and events side by side */
+        .calendar-events-container {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        /* Calendar Styling */
         .calendar-container {
-            padding: 0 0 25px;
             width: 70%;
-            margin: 40px auto 0;
-            text-align: center;
-            
+            background: #f9f9f9;
+            padding: 20px;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
 
-        .month {
-            padding: 0 0 25px;
-            width: 100%;
-            background: #030518;
-            text-align: center;
+        /* Events Card Styling */
+        .events-card {
+            width: 30%;
+            background: #ffffff;
+            border: 1px solid #807e7e;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            height: 350px;  /* Set a fixed height to control the size */
+            overflow-y: auto;  /* Allow scrolling if events overflow */
         }
 
-        .month ul {
+        .events-list {
+            max-height: 300px; /* Limit the visible area */
+            overflow-y: auto;  /* Make the events scrollable */
+            padding-right: 10px; /* Add a little padding on the right for scroll */
+        }
+
+        .event-item {
+            margin-bottom: 15px; /* Space between events */
+            padding: 10px; /* Add padding around the event content */
+            border-radius: 5px; /* Rounded corners for each event */
+            border: 2px solid #1E3A8A; /* Dark blue border */
+            padding-bottom: 15px; /* Increased bottom padding to ensure border is visible */
+            transition: border-color 0.3s ease; /* Smooth border color transition on hover */
+        }
+
+        .event-item:last-child {
+            margin-bottom: 0; /* Remove bottom margin from the last event */
+        }
+
+        .event-item:hover {
+            border-color: #1a2b6d; /* Darken the border when hovering over an event */
+        }
+
+        .event-title {
+            font-size: 1.2em;
+            color: #333;
             margin: 0;
             padding: 0;
         }
 
-        .month ul li {
-            color: white;
-            font-size: 20px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
+        .event-time {
+            color: #555;
+            font-size: 0.9em;
+            margin-bottom: 5px; /* Reduced margin between time and description */
         }
 
-        /* .month .prev {
-            float: left;
-            padding-top: 10px;
-        }
-
-        .month .next {
-            float: right;
-            padding-top: 10px;
-        } */
-
-        .weekdays {
-            margin: 0;
-            padding: 10px 0;
-            background-color: #ddd;
-        }
-
-        .weekdays li {
-            display: inline-block;
-            width: 10%;
+        .event-description {
             color: #666;
+            font-size: 0.9em;
+            margin-top: 0; /* Remove top margin to bring description closer to time */
+        }
+
+        .month {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #333;
+            color: white;
+            padding: 10px;
+        }
+
+        .month-button {
+            background-color: #1abc9c;
+            border: none;
+            color: white;
+            font-size: 16px;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .month-button:hover {
+            background-color: #16a085;
+        }
+
+        .weekdays, .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
             text-align: center;
         }
 
-        .days {
-            /* padding: 10px 0; */
-            background: #eee;
-            margin: 0;
+        .weekdays {
+            background-color: #ddd;
+            padding: 10px 0;
+            font-weight: bold;
         }
 
-        .days li {
-            list-style-type: none;
-            display: inline-block;
-            width: 20%;
-            text-align: Left;
-            margin-bottom: 5px;
-            font-size: 12px;
-            color: #777;
+        .days div {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        .days li .active {
-            padding: 5px;
-            background: #1abc9c;
-            color: white !important;
+        .days div:hover {
+            background: #ddd;
         }
 
-        /* .row {
-            content: "";
-            display: inline;
+        .empty {
+            background: transparent;
+        }
 
-            clear: both;
-        } */
-
-        /* Add media queries for smaller screens */
-        @media screen and (max-width:720px) {
-            .main-container {
+        /* Responsive Design */
+        @media screen and (max-width: 720px) {
+            .calendar-events-container {
                 flex-direction: column;
                 align-items: center;
             }
-            
-            .sidenav {padding-top: 15px;}
-            .sidenav a {font-size: 18px;}
+
+            .calendar-container, .events-card {
+                width: 90%;
+            }
 
             .card-container {
                 flex-direction: column;
@@ -188,7 +190,7 @@
             }
 
             .card {
-                width: 80%;
+                width: 90%;
             }
         }
     </style>
@@ -197,98 +199,136 @@
 
 <h1>Dashboard</h1>
 
-<!-- Main Content Section: Tabs and Cards side-by-side -->
 <div class="main-container">
-    <!-- Tab Section -->
-    <div class="sidenav">
-            <a a=active href="paHome.html">Home</a>
-            <a href="AddEvents.html">Add Events</a>
-            <a href="checkHours.html">Check Hours</a>
-            <a href="resources.html">Resources</a>
-    </div>
-
-    <!-- Please work -->
-
     <!-- Cards Section -->
     <div class="card-container">
         <div class="card">
-            <h2>Number of Hours:</h2>
-            <p>Description for Card 1 goes here. You can place any content.</p>
+            <h2>Approved Hours: <%= totalApprovedHours %></h2> 
+            <p>Number of approved hours. This does not include pending hours or future events.</p>
         </div>
         <div class="card">
-            <h2>Hours signed up for:</h2>
-            <p>Description for Card 2 goes here. You can place any content.</p>
+            <h2>Hours signed up for: <%= hoursPendingApproval %></h2>
+            <p>Number of pending and event-registered hours. This does not include approved hours.</p>
         </div>
         <div class="card">
-            <h2>Total Hours: </h2>
-            <p>Description for Card 3 goes here. You can place any content.</p>
+            <h2>Total Hours: <%= totalHours %></h2>
+            <p>Total of approved, pending, and registered hours.</p>
+        </div>
+    </div>
+
+    <!-- Calendar and Upcoming Events Side by Side -->
+    <div class="calendar-events-container">
+        <div class="calendar-container">
+            <div class="month">
+                <button class="month-button" id="prev-month">&#10094;</button>
+                <span id="month-name"></span>
+                <span id="year-name"></span>
+                <button class="month-button" id="next-month">&#10095;</button>
+            </div>
+
+            <div class="weekdays">
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+                <div>Sun</div>
+            </div>
+
+            <div class="days" id="calendar-days"></div>
+        </div>
+
+        <div class="events-card">
+            <h2>Upcoming Events</h2>
+            <div class="events-list">
+                <% futureEvents.forEach((event) => { %>
+                <div class="event-item">
+                    <h4 class="event-title"><%= event.EventName %></h4>
+                    <p class="event-time">
+                        <%= new Date(event.DateReportTime).toLocaleDateString("en-US", { 
+                            weekday: "long",  
+                            month: "long",    
+                            day: "numeric",   
+                            year: "numeric"   
+                        }) %> at 
+                        <%= new Date(event.DateReportTime).toLocaleTimeString("en-US", { 
+                            hour: "2-digit", 
+                            minute: "2-digit", 
+                            hour12: true      
+                        }) %>
+                    </p>
+                    <p class="event-description"><%= event.Description %></p>
+                </div>
+                <% }) %>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Calendar Section -->
- <div class="card-container">
-    <div class="calendar-container">
-        <div class="month">      
-            <ul>
-                <!-- <li class="prev">&#10094;</li>
-                <li class="next">&#10095;</li> -->
-                <li>August<br><span style="font-size:18px">2021</span></li>
-            </ul>
-        </div>
+<script>
+    const today = new Date();
+    let currentMonth = today.getMonth();
+    let currentYear = today.getFullYear();
+    const calendarDays = document.getElementById("calendar-days");
+    const monthName = document.getElementById("month-name");
+    const yearName = document.getElementById("year-name");
 
-        <ul class="weekdays">
-            <li>Mo</li>
-            <li>Tu</li>
-            <li>We</li>
-            <li>Th</li>
-            <li>Fr</li>
-            <li>Sa</li>
-            <li>Su</li>
-        </ul>
-    
-        <ul class="days">  
-            <li>1</li>
-            <li>2</li>
-            <li>3</li>
-            <li>4</li>
-            <li>5</li>
-            <li>6</li>
-            <li>7</li>
-            <li>8</li>
-            <li>9</li>
-            <li><span class="active">10</span></li>
-            <li>11</li>
-            <li>12</li>
-            <li>13</li>
-            <li>14</li>
-            <li>15</li>
-            <li>16</li>
-            <li>17</li>
-            <li>18</li>
-            <li>19</li>
-            <li>20</li>
-            <li>21</li>
-            <li>22</li>
-            <li>23</li>
-            <li>24</li>
-            <li>25</li>
-            <li>26</li>
-            <li>27</li>
-            <li>28</li>
-            <li>29</li>
-            <li>30</li>
-            <li>31</li>
-        </ul>
-    </div>
-        <div class="card">
-            <div class = "headerfont">Upcoming Events</div>
-            <h2>August 1st:</h2>
-            <p>Description for Card 1 goes here. You can place any content.</p>
-            <h2>August 14th:</h2>
-            <p>Description for Card 1 goes here. You can place any content.</p>
-        </div>
-</div>
+    function renderCalendar() {
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+        const firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 6 : firstDayOfMonth.getDay() - 1; 
+        const lastDateOfMonth = lastDayOfMonth.getDate();
+
+        monthName.textContent = firstDayOfMonth.toLocaleString('default', { month: 'long' });
+        yearName.textContent = currentYear;
+
+        calendarDays.innerHTML = "";
+
+        for (let i = 0; i < firstDayOfWeek; i++) {
+            const emptyCell = document.createElement("div");
+            emptyCell.classList.add("empty");
+            calendarDays.appendChild(emptyCell);
+        }
+
+        for (let day = 1; day <= lastDateOfMonth; day++) {
+            const dayCell = document.createElement("div");
+            dayCell.textContent = day;
+
+            if (
+                day === today.getDate() &&
+                currentMonth === today.getMonth() &&
+                currentYear === today.getFullYear()
+            ) {
+                dayCell.style.backgroundColor = "#1abc9c";
+                dayCell.style.color = "#fff";
+            }
+
+            calendarDays.appendChild(dayCell);
+        }
+
+        const remainingCells = 7 - (calendarDays.children.length % 7);
+        for (let i = 0; i < remainingCells && remainingCells !== 7; i++) {
+            const emptyCell = document.createElement("div");
+            emptyCell.classList.add("empty");
+            calendarDays.appendChild(emptyCell);
+        }
+    }
+
+    document.getElementById("prev-month").addEventListener("click", () => {
+        currentMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+        if (currentMonth === 11) currentYear--;
+        renderCalendar();
+    });
+
+    document.getElementById("next-month").addEventListener("click", () => {
+        currentMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+        if (currentMonth === 0) currentYear++;
+        renderCalendar();
+    });
+
+    renderCalendar();
+</script>
 
 </body>
 </html>

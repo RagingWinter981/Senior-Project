@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<%- include('header') %>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Approve/Deny Event Requests</title>
+  <style>
+    .card {
+      background: #ffffff;
+      /* color: #000000; */
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      margin-bottom: 20px;
+      width: 35%;
+    }
+    .card-header {
+      background-color: #ffffff;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .card-section {
+      margin-bottom: 15px;
+    }
+    .card-section h3 {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      color: #1a237e;
+    }
+    .card-section p {
+      margin: 5px 0;
+    }
+    .actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 60px; /* Adjust the value to control the space between buttons */
+    }
+    .actions button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 0 10px;
+    }
+    .actions .approve {
+      background-color: #4caf50; /* Green */
+      color: white;
+    }
+    .actions .approve:hover {
+      background-color: #388e3c;
+    }
+    .actions .deny {
+      background-color: #f44336; /* Red */
+      color: white;
+    }
+    .actions .deny:hover {
+      background-color: #d32f2f;
+    }
+    .approve-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .reject-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            background-color: #f44336;
+            color: white;
+        }
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4); /* Black background with opacity */
+  padding-top: 60px;
+  align-items: center;
+  justify-content: center; /* Center content horizontally and vertically */
+}
+
+/* Modal Content */
+.modal-content {
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 30px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+  text-align: center;
+}
+
+/* Close Button */
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Styling the Reasoning Textarea */
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical; /* Allow resizing vertically */
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+textarea:focus {
+  border-color: #6C63FF;
+  outline: none;
+}
+
+/* Button Styling */
+button {
+  background-color: #6C63FF; /* Soft blue-purple */
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #5A54E8;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Text Styling */
+p {
+  font-size: 16px;
+  color: #333;
+  margin-top: 10px;
+}
+.card-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0px; /* Space between cards */
+  justify-content: left;
+  gap: 30px;
+  margin: 20px; /* Optional: adds margin around the content */
+  /* margin-right: ; */
+}
+
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <h1> Events Requested</h1>
+    <h2>Events that need to be approved</h2>
+    <div class="card-content">
+    <% requests.forEach((row) => { %>
+    
+    <div class="card">
+      <div class="card-header">Event Request: <%= row.EventName %></div>
+      <div class="card-section">
+        <h3>Event Info</h3>
+        <p><strong>Location:</strong> <%= row.Location %></p>
+        <p><strong>Start Time:</strong><%= moment(row.DateStart).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+        <p><strong>End Time:</strong> <%= moment(row.DateEnd).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+        <p><strong>Report Time:</strong> <%= moment(row.ReportTime).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+      </div>
+      <div class="card-section">
+        <h3>Point of Contact</h3>
+        <p><strong>Name:</strong> <%= row.pocName %></p>
+        <p><strong>Office:</strong> <%= row.pocOffice %></p>
+        <p><strong>Title:</strong> <%= row.pocTitle %></p>
+        <p><strong>Email:</strong> <%= row.pocEmail %></p>
+      </div>
+      <div class="card-section">
+        <h3>Details</h3>
+        <p><strong>Number of PAs:</strong> <%= row.numSpots %></p>
+        <p><strong>Attire:</strong> <%= row.attire %></p>
+        <p><strong>Description:</strong> <%= row.requestDescription %></p>
+        <p><strong>Additional Information:</strong> <%= row.additionalNotes %></p>
+      </div>
+      <div class="actions">
+        <a href="#" class="approve-btn" data-request-id="<%= row._id %>">Approve</a>
+        <a href="#" class="reject-btn" data-request-id="<%= row._id %>">Reject</a>
+      </div>
+    </div>
+  <% }) %>
+  </div>
+</div>
+
+  <div id="approveModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Approve Event Request</h2>
+        <form action="/ApproveRequestedEvent" method="POST">
+            <text> This is an approved event. </text><br>
+            <textarea id="Reasoning" name="Reasoning" placeholder="Enter your reasoning (optional)" rows="4"></textarea><br>
+            <input type="hidden" id="requestId" name="requestId">
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+</div>
+
+<div id="rejectModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Reject Event Request</h2>
+    <form action="/rejectRequestedEvent" method="POST">
+      <p>This is not an event.</p>
+      <textarea id="Reasoning" name="Reasoning" placeholder="Enter your reasoning (optional)" rows="4"></textarea><br>
+      <input type="hidden" id="requestId" name="requestId">
+      <button type="submit">Confirm</button>
+    </form>
+  </div>
+</div>
+
+
+<script>
+    // Approval modal logic
+    const Approvalmodal = document.getElementById("approveModal"); // Correct ID reference
+    const approvalButtons = document.querySelectorAll(".approve-btn");
+    const closeApproval = document.querySelector("#approveModal .close"); // Correct close button reference
+
+    approvalButtons.forEach(button => {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            
+            const requestId = event.target.getAttribute("data-request-id");
+            document.querySelector("#approveModal #requestId").value = requestId;
+
+            Approvalmodal.style.display = "block"; // Open modal
+        });
+    });
+
+    closeApproval.addEventListener("click", function() {
+        Approvalmodal.style.display = "none";
+    });
+
+    window.addEventListener("click", function(event) {
+        if (event.target === Approvalmodal) {
+            Approvalmodal.style.display = "none";
+        }
+    });
+
+ // Approval modal logic
+  const rejectModal = document.getElementById("rejectModal"); // Correct ID reference
+  const rejectButtons = document.querySelectorAll(".reject-btn");
+  const closeReject = document.querySelector("#rejectModal .close"); // Correct close button reference
+
+    rejectButtons.forEach(button => {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            
+            const requestId = event.target.getAttribute("data-request-id");
+            document.querySelector("#rejectModal #requestId").value = requestId;
+
+            rejectModal.style.display = "block"; // Open modal
+        });
+    });
+
+    closeReject.addEventListener("click", function() {
+      rejectModal.style.display = "none";
+    });
+
+    window.addEventListener("click", function(event) {
+        if (event.target === rejectModal) {
+          rejectModal.style.display = "none";
+        }
+    });
+
+  </script>
+  <div class="main-content">
+ <h2>History</h2>
+ <div class="card-content">
+ <% handledrequests.forEach((oldRequest) => { %>
+  <div class="card">
+    <div class="card-header">Event Request: <%= oldRequest.EventName %></div>
+    <div class="card-section">
+      <h3>Event Info</h3>
+      <p><strong>Location:</strong> <%= oldRequest.Location %></p>
+      <p><strong>Start Time:</strong><%= moment(oldRequest.DateStart).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+      <p><strong>End Time:</strong> <%= moment(oldRequest.DateEnd).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+      <p><strong>Report Time:</strong> <%= moment(oldRequest.ReportTime).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+    </div>
+    <div class="card-section">
+      <h3>Point of Contact</h3>
+      <p><strong>Name:</strong> <%= oldRequest.pocName %></p>
+      <p><strong>Office:</strong> <%= oldRequest.pocOffice %></p>
+      <p><strong>Title:</strong> <%= oldRequest.pocTitle %></p>
+      <p><strong>Email:</strong> <%= oldRequest.pocEmail %></p>
+    </div>
+    <div class="card-section">
+      <h3>Details</h3>
+      <p><strong>Number of PAs:</strong> <%= oldRequest.numSpots %></p>
+      <p><strong>Attire:</strong> <%= oldRequest.attire %></p>
+      <p><strong>Description:</strong> <%= oldRequest.requestDescription %></p>
+      <p><strong>Additional Information:</strong> <%= oldRequest.additionalNotes %></p>
+    </div>
+    <div class="card-section">
+      <h3>Status</h3>
+      <p><strong>Status:</strong> 
+        <%= String(oldRequest.IsEvent) === "True" ? "Approved" : 
+            (String(oldRequest.IsEvent) === "False" ? "Rejected" : "N/A") %>
+    </p>
+      <p><strong>Reasoning:</strong> <%= oldRequest.Reasoning %></p>
+    </div>
+  </div>
+<% }) %>
+</div>
+</div>
+</div>
+  </div>
+</body>
+</html>

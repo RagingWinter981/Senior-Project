@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Request Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .header {
+            display: flex;                           /* Use flexbox for alignment */
+            align-items: center;                     /* Center vertically */
+            justify-content: center;                 /* Center horizontally */
+            gap: 15px;                               /* Space between logo and text */
+            background-color: #f1f1f1;               /* Subtle background color */
+            padding: 20px;                           /* Add padding around */
+            border-radius: 8px 8px 0 0;              /* Rounded top corners */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);   /* Soft shadow for depth */
+        }
+
+        .header img {
+            width: 120px;                            /* Set consistent logo size */
+            height: auto;                            /* Maintain aspect ratio */
+            border-radius: 8px;                      /* Soft edges */
+        }
+
+        .header h1 {
+            font-size: 28px;                         /* Large, clear title */
+            color: #333;                             /* Darker text for contrast */
+            margin: 0;                               /* Remove default margin */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column; /* Stack label and input vertically */
+            gap: 10px;
+            margin-bottom: 20px;
+            margin-right: 20px;
+        }
+
+        .form-group label {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .section {
+            border: 1px solid #ccc;          /* Faint grey border */
+            padding: 20px;                    /* Add padding inside the box */
+            margin-bottom: 25px;              /* Add margin between sections */
+            border-radius: 8px;               /* Rounded corners */
+            background-color: #f9f9f9;        /* Light grey background */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle shadow */
+        }
+
+
+        .section-heading {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: underline;
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            padding: 12px 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .logo-container {
+            text-align: center;               /* Center the logo */
+            margin-bottom: 30px;              /* Add space below the logo */
+        }
+
+        .logo {
+            max-width: 180px;                 /* Set max size to keep it proportional */
+            height: auto;                     /* Maintain aspect ratio */
+            display: inline-block;            /* Center inline */
+            border-radius: 8px;               /* Add subtle rounding for a smoother look */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);  /* Subtle shadow for depth */
+            transition: transform 0.3s;       /* Add hover effect */
+        }
+
+        .logo:hover {
+            transform: scale(1.05);           /* Slight zoom on hover */
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="/images/PresidentAmbassadors.jpg" alt="President Ambassadors Logo">
+        <h1>President Ambassador Event Request Form</h1>
+    </div>
+    
+
+<div class="container">
+    <form method="POST" action="/RequestAnEvent">
+
+        <!-- Event Details Section -->
+        <div class="section">
+            <p>This is a request to have President Ambassadors (PAs) assigned to an event. Submitting this form does not guarantee PA availability or confirmation. Your request will be reviewed and processed accordingly.</p>
+        </div>
+        <div class="section">
+            <div class="section-heading">Event Details</div>
+            
+            <div class="form-group">
+                <label for="EventName">Event Name</label>
+                <input type="text" id="EventName" name="EventName" required placeholder="Enter the event name">
+            </div>
+
+            <div class="form-group">
+                <label for="Location">Event Location</label>
+                <input type="text" id="Location" name="Location" required placeholder="Enter the location">
+            </div>
+
+            <div class="form-group">
+                <label for="DateStart">Start Time</label>
+                <input type="datetime-local" id="DateStart" name="DateStart" required>
+            </div>
+
+            <div class="form-group">
+                <label for="DateEnd">End Time</label>
+                <input type="datetime-local" id="DateEnd" name="DateEnd" required>
+            </div>
+
+            <div class="form-group">
+                <label for="ReportTime">Report Time</label>
+                <input type="datetime-local" id="ReportTime" name="ReportTime" placeholder="How early would you like the PAs to arrive" required>
+            </div>
+
+        </div>
+
+        <!-- Point of Contact Section -->
+        <div class="section">
+            <div class="section-heading">Point of Contact</div>
+
+            <div class="form-group">
+                <label for="pocName">Name</label>
+                <input type="text" id="pocName" name="pocName" required placeholder="Enter the contact person's name">
+            </div>
+
+            <div class="form-group">
+                <label for="pocOffice">Office</label>
+                <input type="text" id="pocOffice" name="pocOffice" required placeholder="Enter the contact person's office">
+            </div>
+
+            <div class="form-group">
+                <label for="pocTitle">Title</label>
+                <input type="text" id="pocTitle" name="pocTitle" required placeholder="Enter the contact person's title">
+            </div>
+            <div class="form-group">
+                <label for="pocEmail">Email</label>
+                <input type="text" id="pocEmail" name="pocEmail" required placeholder="Enter the contact person's email">
+            </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="section">
+            <div class="section-heading">Details</div>
+            <div class="form-group">
+                <label for="attire">Attire</label>
+                <input type="text" id="attire" name="attire" required placeholder="Enter the required attire">
+            </div>
+            <div class="form-group">
+                <label for="numSpots">Number of Spots</label>
+                <input type="number" id="numSpots" name="numSpots" required min="1" placeholder="Enter number of spots">
+            </div>
+
+            <div class="form-group">
+                <label for="requestDescription">Event Description</label>
+                <textarea id="requestDescription" name="requestDescription" required placeholder="Describe the event"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="additionalNotes">Additional Notes (Optional)</label>
+                <textarea id="additionalNotes" name="additionalNotes" placeholder="Any other relevant information"></textarea>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn">Submit Request</button>
+    </form>
+</div>
+
+<script>
+    // Handling form submission
+    document.getElementById('eventRequestForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Here, you can handle form data submission, validation, or API calls.
+        alert('Your event request has been submitted!');
+        document.getElementById('eventRequestForm').reset(); // Reset form after submission
+    });
+</script>
+
+</body>
+</html>

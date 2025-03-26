@@ -5,7 +5,7 @@
 <html lang="en">
   <%- include('header') %>
 <head>
- <title>Submission Form</title>
+ <title>Edit Event: <%= request.EventName  %></title>
   <style>
   
   /* General Styles */
@@ -135,24 +135,24 @@ button:hover {
 <body>
 
 <!-- <div class="main-content"> -->
-<div class="form-container">
-    <h2>Submission Form</h2>
+  <div class="form-container">
+    <h2>Create Event from Request Form</h2>
   
-    <form method="POST" action="/events">
+    <form action="/CreateEventFromRequest/:id" method="POST" >
       <!-- Event Details Section -->
       <fieldset class="form-group">
         <legend>Event Details</legend>
         <div class="form-group">
           <label for="EventName">Event Name</label>
-          <input type="text" id="EventName" name="EventName" required>
+          <input type="text" id="EventName" name="EventName" value = "<%= request.EventName %>" required>
         </div>
         <div class="form-group">
           <label for="location">Location</label>
-          <input type="text" id="Location" name="Location" placeholder="Enter location" required>
+          <input type="text" id="Location" name="Location" placeholder="Enter location" value= "<%= request.Location %>" required>
         </div>
         <div class="form-group">
           <label for="attire">Attire</label>
-          <input type="text" id="Attire" name="Attire" placeholder="Enter attire details" required>
+          <input type="text" id="Attire" name="Attire" placeholder="Enter attire details" value = "<%= request.attire %>" required>
         </div>
       </fieldset>
   
@@ -161,23 +161,23 @@ button:hover {
         <legend>Schedule</legend>
         <div class="form-group">
           <label for="report-time">Report Time</label>
-          <input type="datetime-local" id="DateReportTime" name="DateReportTime" required>
+          <input type="datetime-local" id="DateReportTime" name="DateReportTime" value="<%= moment(request.ReportTime).format('YYYY-MM-DDTHH:mm') %>" required>
         </div>
         <div class="form-group">
           <label for="start-time">Start Time</label>
-          <input type="datetime-local" id="DateStart" name="DateStart" required>
+          <input type="datetime-local" id="DateStart" name="DateStart" value="<%= moment(request.DateStart).format('YYYY-MM-DDTHH:mm') %>" required>
         </div>
         <div class="form-group">
           <label for="end-time">End Time</label>
-          <input type="datetime-local" id="DateEnd" name="DateEnd" required>
+          <input type="datetime-local" id="DateEnd" name="DateEnd" value="<%= moment(request.DateEnd).format('YYYY-MM-DDTHH:mm') %>" required>
         </div>
         <div class="form-group">
           <label for="plus-minus-time">+/- Time</label>
-          <input type="number" id="AdjustedTime" name="AdjustedTime" placeholder="Enter time adjustment" required>
+          <input type="number" id="AdjustedTime" name="AdjustedTime" placeholder="Enter time adjustment" placeholder="Please enter adjusted time" required>
         </div>
         <div class="form-group">
           <label for="plus-minus-time">Live time: </label>
-          <input type="datetime-local" id="LiveTime" name="LiveTime" required>
+          <input type="datetime-local" id="LiveTime" name="LiveTime"  placeholder="Enter Live time" required>
         </div>
       </fieldset>
   
@@ -186,15 +186,15 @@ button:hover {
         <legend>Point of Contact</legend>
         <div class="form-group">
           <label for="contact-name">Name</label>
-          <input type="text" id="PACoordinatorName" name="PACoordinatorName" placeholder="Enter name" required>
+          <input type="text" id="PACoordinatorName" name="PACoordinatorName" placeholder="Enter name" value="<%= request.pocName %>"  required>
         </div>
         <div class="form-group">
           <label for="contact-office">Office</label>
-          <input type="text" id="PACoordinatorOffice" name="PACoordinatorOffice" placeholder="Enter office details" required>
+          <input type="text" id="PACoordinatorOffice" name="PACoordinatorOffice" placeholder="Enter office details" value="<%= request.pocOffice %>" required>
         </div>
         <div class="form-group">
           <label for="contact-title">Title</label>
-          <input type="text" id="PACoordinatorTitle" name="PACoordinatorTitle" placeholder="Enter title" required>
+          <input type="text" id="PACoordinatorTitle" name="PACoordinatorTitle" placeholder="Enter title" value="<%= request.pocTitle %>" required>
         </div>
       </fieldset>
   
@@ -203,23 +203,25 @@ button:hover {
         <legend>Additional Information</legend>
         <div class="form-group">
           <label for="credit-hours">Credit Hours</label>
-          <input type="number" id="NumOfHours" name="NumOfHours" required>
+          <input type="number" id="NumOfHours" name="NumOfHours" placeholder="Please Enter credit Hours" required>
         </div>
         <div class="form-group">
           <label for="description">Description</label>
-          <textarea id="Description" name="Description" rows="4" placeholder="Enter description" required></textarea>
-        </div>
+          <textarea id="Description" name="Description" rows="4" placeholder="Enter description" required><%=request.requestDescription%>
+        </textarea>
+        
         <div class="form-group">
           <label for="number-of-spots">Number of Spots</label>
-          <input type="number" id="NumOfPAs" name="NumOfPAs" min="1" required>
+          <input type="number" id="NumOfPAs" name="NumOfPAs" min="1" value="<%= request.numSpots %>" required>
         </div>
       </fieldset>
   
       <!-- Submit Button -->
       <div class="form-group">
-        <button type="submit">Submit</button>
+        <button type="submit">Update Event</button>
       </div> 
     </form>
   </div>
+<!-- </div> -->
 </body>
 </html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<%- include('paheader') %>
+<html>
+<head>
+    <style>
+        /* Card container styling */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding-right: 10%;
+            padding-top:2%;
+            
+            /* align-content: right; */
+
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            border-style: solid;
+            border-color: #807e7e;
+            box-shadow: 10px 4px 8px rgba(96, 34, 34, 0.2);
+            width: calc(33.33% - 20px); /* 3 cards per row */
+            min-width: 300px;
+            padding: 20px;
+            text-align: left;
+            transition: transform 0.3s ease-in-out;
+            margin-top: 20px;
+            position: relative;
+        }
+        /* .card {
+            background-color: #fff;
+            border-radius: 8px;
+            border-style: solid;
+            border-color: #807e7e;
+            box-shadow: 10px 4px 8px rgba(96, 34, 34, 0.2);
+            width: 95%;
+            min-width: 30%;
+            padding: 20px;
+            text-align: left;
+            transition: transform 0.3s ease-in-out;
+            margin-top: 20px;
+            position: relative;
+        } */
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card h2 {
+    font-size: 24px;
+    margin: 0 0 10px;
+    color: #444;
+    margin-top: 5px;
+}
+.card p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #555;
+}
+.card-section {
+    margin-bottom: 15px;
+}
+.card-section h3 {
+    font-size: 16px;
+    color: #222;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+.card-section p {
+    margin: 4px 0;
+}
+.btn-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+button {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between icon and text */
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  outline: none;
+  
+}
+button i.material-icons {
+  font-size: 20px;
+}
+.live-badge {
+  display: inline-block;
+  background-color: rgb(22, 167, 6);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  width: 50px;
+  height: 30px;
+  align-content: center;
+}
+.inactive-badge {
+  display: inline-block;
+  background-color: rgb(91, 90, 90);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  width: 55px;
+  height: 30px;
+  align-content: center;
+}
+.full-badge {
+  display: inline-block;
+  background-color: rgb(167, 6, 6);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  width: 50px;
+  height: 30px;
+  align-content: center;
+
+}
+.attend-badge {
+  display: inline-block;
+  background-color: rgb(167, 164, 6);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  width: 100px;
+  height: 30px;
+  align-content: center;
+
+}
+
+        /* Add media queries for smaller screens */
+        @media screen and (max-width:720px) {
+            .main-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                width: 80%;
+            }
+            .signup-btn {
+                display: flex;
+                align-items: center;
+                gap: 8px; /* Space between icon and text */
+                padding: 10px 16px;
+                /* font-size: 16px; */
+                /* font-weight: 500; */
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                outline: none;
+                background-color: #00796b; /* Dark teal */
+                color: #ffffff; /* White text */
+                text-decoration: none; /* Removes underline */
+            }
+
+        }
+    </style>
+</head>
+<body>
+
+<!-- Main Content Section: Tabs and Cards side-by-side -->
+<div class="main-content">   
+
+    <h1>Add Events </h1>
+    <div class="card-container">
+        <% events.forEach((row) => { %>
+            <div class="card">
+                
+                <%if (moment(row.DateReportTime).isSameOrBefore(moment())) { %>
+                    <span class="inactive-badge">Past</span>
+                <%}  else if (moment(row.LiveTime).isSameOrBefore(moment())) { %>
+                    <% if (signedUpEventIds.has(row._id.toString())) { %>
+                            <span class="attend-badge">Attending</span>
+                    <% } else if( eventSignupCounts[row._id] === row.NumOfPAs) { %>
+                        <span class="full-badge"> Full</span>
+                    <% } else { %>
+                        <span class="live-badge">Live</span>
+                    <% } %>
+                <% } else { %>
+                        
+                 <% } %>
+                  <h2><%= row.EventName %></h2>
+    
+                <!-- Time Details Section -->
+                <div class="card-section">
+                    <h3>Event Timing</h3>
+                    <p><strong>Report Time:</strong> <%= moment(row.DateReportTime).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+                    <p><strong>Start:</strong> <%= moment(row.DateStart).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+                    <p><strong>End:</strong> <%= moment(row.DateEnd).format('dddd, MMMM D, YYYY - h:mm A') %></p>
+                    <p><strong>Adjusted Time:</strong> <%= row.AdjustedTime %> min</p>
+                </div>
+    
+                <!-- PA Details Section -->
+                <div class="card-section">
+                    <h3>PA Information</h3>
+                    <p><strong>Location:</strong> <%= row.Location %></p>
+                    <p><strong>Attire:</strong> <%= row.Attire %></p>
+                    <p><strong>Credit Hours:</strong> <%= row.NumOfHours %> &nbsp; <strong>Number of Spots: </strong><%= eventSignupCounts[row._id] || 0 %> / <%= row.NumOfPAs %></p>                
+                </div>
+    
+                <!-- PA Coordinator Details Section -->
+                <div class="card-section">
+                    <h3>PA Coordinator</h3>
+                    <p><strong>Name:</strong> <%= row.PACoordinatorName %></p>
+                    <p><strong>Office:</strong> <%= row.PACoordinatorOffice %></p>
+                    <p><strong>Title:</strong> <%= row.PACoordinatorTitle %></p>
+                </div>
+    
+                <!-- Description Section -->
+                <div class="card-section">
+                    <h3>Description</h3>
+                    <p><%= row.Description %></p>
+                </div>
+    
+                <!-- Buttons -->
+                <div class="btn-container">
+                    <a href='/paMoreInfo/<%= row._id %>' class="Info-btn">
+                        <i class="material-icons">info</i>
+                    </a>
+                    <% if (moment(row.DateReportTime).isSameOrBefore(moment())) { %>
+
+                    <% } else if (moment(row.LiveTime).isSameOrBefore(moment())) { %>
+                        <% if (signedUpEventIds.has(row._id.toString())) { %>
+                            <!-- User already signed up -->
+                            <!-- <span class="signed-up-text"> You’re signed up</span> -->
+                        <% } else if( eventSignupCounts[row._id] === row.NumOfPAs) { %>
+                        
+                        <% }else{ %>
+                            <a href='/paSignup/<%= row._id %>' class="signup-btn">
+                                <i class="material-icons">event_available</i>
+                            </a>
+                        <% } %>
+                    <% } else { %>
+
+                    <% } %>
+                </div>
+            </div>
+ <% }) %>
+
+
+
+
+    <!-- <input type="text" placeholder="Search..">
+    <div class = "card">
+        <header>Name of Event</header>
+        <br>
+        <p>Date: Tues, Nov 11, 2024</p>
+        <p>availability: 4/8 Spots open</p>
+    </div>
+  -->
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<%- include('header') %>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Bar Graph Container */
+        .graph-container {
+            width: 60%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Cards Section */
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 720px) {
+            .graph-container {
+                width: 90%;
+            }
+
+            .card {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Hour Tracking</h1>
+
+<!-- Bar Graph -->
+<div class="graph-container">
+    <canvas id="barGraph"></canvas>
+</div>
+
+<!-- Cards Section -->
+<div class="cards-container">
+    <!-- Example Cards (Can be repeated for each person) -->
+
+    <% paHoursData.forEach(pa => { %>
+        <div class="card">
+            <h2><%= pa.fName %> <%= pa.lName %></h2>
+            <p><strong>Total Hours Completed:</strong> <%= pa.totalHours %></p>  <!--  Shows 0 if no approved hours -->
+    
+            <p><strong>Events Worked:</strong></p>
+            <% if (pa.events.length > 0) { %>
+                <ul>
+                    <% pa.events.forEach(event => { %>
+                        <li><%= event %></li>
+                    <% }) %>
+                </ul>
+            <% } else { %>
+                <p>No approved events</p>  <!--  Display message if no events -->
+            <% } %>
+        </div>
+    <% }) %>
+    </div>    
+    
+    
+
+    <!-- Repeat Cards for more people -->
+</div>
+
+
+
+
+<!-- Chart.js Script -->
+<!-- Chart.js Script -->
+<script>
+    // Get the data from the backend (EJS)
+    const paHoursData = <%- JSON.stringify(paHoursData) %>;
+
+    // Extract the labels (First and Last names) and hours data
+    const labels = paHoursData.map(pa => `${pa.fName} ${pa.lName}`);  // Combine first and last names
+    const hours = paHoursData.map(pa => pa.totalHours);  // Extract total hours
+
+    const ctx = document.getElementById('barGraph').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,  // Use the names as labels
+            datasets: [{
+                label: 'Hours Completed',
+                data: hours,  // Use the hours data for the bar heights
+                backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: 'y',  // Horizontal bar graph
+            plugins: {
+                legend: {
+                    display: true,
+                }
+            },
+            scales: {
+                x: {
+                    max: 20,  // Cap the maximum hours at 20
+                    title: {
+                        display: true,
+                        text: 'Hours'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'People'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+
+</body>
+</html>

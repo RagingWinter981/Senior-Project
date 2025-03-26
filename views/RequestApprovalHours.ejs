@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<%- include('header') %>
+<html>
+<head>
+    <style>
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .request-card {
+            background: #f4f4f9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .request-card .details {
+            margin-bottom: 10px;
+        }
+
+        .request-card .details span {
+            display: block;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        } */
+
+        .approve-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .reject-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            background-color: #f44336;
+            color: white;
+        }
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4); /* Black background with opacity */
+  padding-top: 60px;
+  align-content: center;
+  align-items: center;
+}
+
+/* Modal Content */
+.modal-content {
+  display: flex;
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Change width as needed */
+  max-width: 500px; /* Change max width as needed */
+  border-radius: 8px;
+  align-self: center;
+  align-content: center;
+  text-align: center; 
+}
+
+/* Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: left;
+  float: left; 
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Styling for form elements */
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background-color: #6C63FF; /* Soft blue-purple */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #5A54E8;
+}
+    </style>
+</head>
+<body>
+<div class="main-content">
+    <h1>Approve Hour Changes</h1>
+    <div class="container" id="requestsContainer">
+        <!-- Example Request 1 -->
+        <% hoursData.forEach(hour => { %>
+            <% 
+                const event = eventData.find(e => e._id.toString() === hour.EventID.toString());
+                const user = paData.find(u => u._id.toString() === hour.UserID.toString());
+                if (event || user) { 
+            %>
+            <div class="request-card">
+            <div class="details">
+                <span><strong>President Ambassador: </strong><%= user.UserName %></span>
+                <span><strong>Event: </strong><%= event.EventName %></span>
+                <span><strong>Date: </strong> <%= new Date(event.DateReportTime).toLocaleDateString('en-US') %></span>
+                <span><strong>Original Hours: </strong><%= hour.HoursEarned %></span>
+                <% if (hour.RequestedTime) { %>
+                    <span><strong>Proposed Hours: </strong><%= hour.RequestedTime %></span>
+                <% } %>
+                <span><strong>Reasoning: </strong> <%= hour.Reasoning %></span>
+            </div>
+            <% if (hour.Approval == "Waiting for Approval" ) { %>
+                <a href="#" class="approve-btn" data-hour-id="<%= hour._id %>">Approve</a>
+                <a href="#" class="reject-btn" data-hour-id="<%= hour._id %>">Adjust</a>
+            <% } %>
+            
+            <% } %>
+        </div>
+        
+        <% }) %>
+    </div>
+</div>
+
+<div id="approveModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Approve Hours</h2>
+        <form action="/ApprovePAHours" method="POST">
+            <text> The PA hours matched met the correct amount of hours for the event</text>
+            <br>
+            <input type="hidden" id="hourId" name="hourId">
+            <br><br>
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for Adjusting Hours -->
+<div id="adjustModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Adjust Hours</h2>
+        <form action="/AdjustedPAHours" method="POST">
+            <label for="hours">Adjust Hours:</label>
+            <text> Please enter the hours that the PA earned</text>
+            <input type="number" id="hours" name="hours" required><br>
+
+            <label for="reasoning">Reasoning:</label>
+            <text>Please enter why the PA earned the hours.</text>
+            <textarea id="reasoning" name="reasoning" required></textarea><br>
+
+            <input type="hidden" id="hourId" name="hourId">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Approval modal logic
+    const Approvalmodal = document.getElementById("approveModal"); // Correct ID reference
+    const approvalButtons = document.querySelectorAll(".approve-btn");
+    const closeApproval = document.querySelector("#approveModal .close"); // Correct close button reference
+
+    approvalButtons.forEach(button => {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            
+            const hourId = event.target.getAttribute("data-hour-id");
+            document.querySelector("#approveModal #hourId").value = hourId;
+
+            Approvalmodal.style.display = "block"; // Open modal
+        });
+    });
+
+    closeApproval.addEventListener("click", function() {
+        Approvalmodal.style.display = "none";
+    });
+
+    window.addEventListener("click", function(event) {
+        if (event.target === Approvalmodal) {
+            Approvalmodal.style.display = "none";
+        }
+    });
+
+
+    // Adjust modal logic
+    const Adjustmodal = document.getElementById("adjustModal");
+    const adjustButtons = document.querySelectorAll(".reject-btn");
+    const closeAdjust = document.querySelector("#adjustModal .close");
+
+    adjustButtons.forEach(button => {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            
+            const hourId = event.target.getAttribute("data-hour-id");
+            document.querySelector("#adjustModal #hourId").value = hourId;
+
+            // Open the correct modal
+            Adjustmodal.style.display = "block";
+        });
+    });
+
+    closeAdjust.addEventListener("click", function() {
+        Adjustmodal.style.display = "none";
+    });
+
+    window.addEventListener("click", function(event) {
+        if (event.target === Adjustmodal) {
+            Adjustmodal.style.display = "none";
+        }
+    });
+</script>
+  
+</div>
+</body>
+</html>

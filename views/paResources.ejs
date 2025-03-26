@@ -1,0 +1,182 @@
+<%- include('paheader') %>
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* General Styling */
+        h1 {
+            /* margin-top: //20px; */
+            color: #333;
+            text-align: center;
+            background-color: #ffffff;
+            padding: 1%;
+        }
+        .header {
+            position: sticky;
+            top: 0;
+            padding: 10px 16px;
+            padding-left: 17%;
+            background: #555;
+            color: #f1f1f1;
+        }
+        .headerfont {
+            color: #333;
+            text-align: left;
+            background-color: #ffffff;
+            font-size: 30px;
+            font-weight: bold;
+        }
+        .main {
+            margin-left: 160px; /* Same as the width of the sidenav */
+            font-size: 28px; /* Increased text to enable scrolling */
+            padding: 0px 10px;
+            display: flex;
+            margin-top: 20px;
+        }
+
+        /* Card container styling */
+        .card-container {
+            display: flex;
+            gap: 20px;
+            margin-left: 17%;
+            padding-right: 10%;
+            padding-top:2%;
+            /* align-content: right; */
+
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            border-style: solid;
+            border-color: #807e7e;
+            box-shadow: 10px 4px 8px rgba(0.2, 0.2, 0.2, 0.2);
+            width: 95%;
+            padding: 20px;
+            text-align: left;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card h2 {
+            color: #000000;
+        }
+
+        .card p {
+            color: #000000;
+            font-size: 14px;
+        }
+
+        /* Add media queries for smaller screens */
+        @media screen and (max-width:720px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            .card-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+
+
+<!-- Main Content Section: Tabs and Cards side-by-side -->
+<div class="main-content">
+    <h1>Resources </h1>
+    <!-- Tab Section -->
+    <div class="header" id="myHeader">
+        <h2>Leadership</h2>
+    </div>
+        <div class = "main">
+            <div class="card">
+                <h3>President</h3>
+                <p>Name: Winston Erevelles</p>
+            </div>
+        </div>
+        <div class = "main">
+            <div class="card">
+                <h3>Provost and Executive Vice President for Academic Affairs</h3>
+                <p>Name: Jason Pierce, Ph.D.</p>
+            </div>
+        </div>
+        <div class = "main">
+            <div class="card">
+                <h3>Vice President for Mission</h3>
+                <p>Name: The Rev. John Thompson, S.M., Ed.D.</p>
+            </div>
+        </div>
+        <div class = "main">
+            <div class="card">
+                <h3>Vice President for Administration and Finance</h3>
+                <p>Name: Aaron Hanna</p>
+            </div>
+        </div>
+        <div class = "main">
+            <div class="card">
+                <h3>Vice President for University Advancement</h3>
+                <p>Name: Joel Lauer</p>
+            </div>
+        </div>
+        <div class = "main">
+            <div class="card">
+                <h3>Vice President for Information Services</h3>
+                <p>Name: Curtis D. White</p>
+            </div>
+        </div>
+        <div class="header" id="myHeader">
+            <h2>Board of Trustees</h2>
+        </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>Chancellor, St. Mary’s University</h3>
+                    <p>Name: The Rev. Oscar Vasquez, S.M.</p>
+                </div>
+            </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>Chair, St. Mary’s Board of Trustees</h3>
+                    <p>Name: Lynda Ellis</p>
+                </div>
+            </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>Vice Chair of the Board of Trustees</h3>
+                    <p>Name: Joseph Diaz, M.D.</p>
+                </div>
+            </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>Vice Chair of the Board of Trustees</h3>
+                    <p>Name: Sandra Nannini</p>
+                </div>
+            </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>President, St. Mary’s University</h3>
+                    <p>Name: Winston Erevelles, Ph.D.</p>
+                </div>
+            </div>
+            <div class = "main">
+                <div class="card">
+                    <h3>Dean Emeritus, American University of Sharjah</h3>
+                    <p>Name: Leland T. Blank, Ph.D., P.E.</p>
+                </div>
+            </div>
+    
+    
+</div>
+
+
+</body>
+</html>
