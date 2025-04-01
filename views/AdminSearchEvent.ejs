@@ -135,6 +135,26 @@ button i.material-icons {
 .delete-btn:hover {
   background-color: #8e0000; /* Deeper red */
 }
+.info-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between icon and text */
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  outline: none;
+  background-color: #286fc6; /* Dark red */
+  color: #ffffff; /* White text */
+  text-decoration: none; /* Removes underline */
+}
+
+.info-btn:hover {
+  background-color: #0c4172; /* Deeper red */
+}
 
 button:active {
   transform: scale(0.98); /* Slight shrink on click */
@@ -181,28 +201,18 @@ button:active {
             <div class="card-section">
                 <h3>PA Information</h3>
                 <p><strong>Location:</strong> <%= row.Location %></p>
-                <p><strong>Attire:</strong> <%= row.Attire %></p>
                 <p><strong>Credit Hours:</strong> <%= row.NumOfHours %> &nbsp; <strong>Number of Spots:</strong> <%= row.NumOfPAs %></p>                
             </div>
 
-            <!-- PA Coordinator Details Section -->
-            <div class="card-section">
-                <h3>PA Coordinator</h3>
-                <p><strong>Name:</strong> <%= row.PACoordinatorName %></p>
-                <p><strong>Office:</strong> <%= row.PACoordinatorOffice %></p>
-                <p><strong>Title:</strong> <%= row.PACoordinatorTitle %></p>
-            </div>
-
-            <!-- Description Section -->
-            <div class="card-section">
-                <h3>Description</h3>
-                <p><%= row.Description %></p>
-            </div>
 
             <!-- Buttons -->
             <div class="btn-container">
                 <a href='/edit/<%= row._id %>' class="edit-btn">
                     <i class="material-icons">edit</i>
+                </a>
+
+                <a href='/view/<%= row._id %>' class="info-btn">
+                    <i class="material-icons">info</i>
                 </a>
  
                 <a href='/delete/<%= row._id %>' class="delete-btn">

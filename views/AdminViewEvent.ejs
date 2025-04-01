@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<%- include('header') %>
+<html lang="en">
+<head>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4; /* Light background */
+            margin: 0;
+            padding: 0;
+            color: #333; /* Improved readability */
+        }
+
+        /* Layout */
+        .main-content {
+            display: grid; 
+            grid-template-columns: 2fr 1fr; 
+            gap: 32px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 32px;
+            background: #ffffff;  /* Clean white content box */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+
+        /* Left Column */
+        .left-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Event Header */
+        .event-header {
+            background: linear-gradient(135deg, #062158, #3557bd); /* Cleaner gradient */
+            color: #fff;
+            padding: 32px;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-header h1 {
+            font-size: 2.8rem;
+            margin: 0;
+        }
+
+        .event-header p {
+            font-size: 1.2rem;
+            margin-top: 8px;
+        }
+
+        /* Section Headers */
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 16px;
+            border-bottom: 3px solid #3498db;
+            display: inline-block;
+            padding-bottom: 4px;
+        }
+
+        /* Info Blocks */
+        .info-block p {
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .info-block strong {
+            color: #2c3e50;
+        }
+
+        /* Participant Cards */
+        .participant-card {
+            display: flex;               /* Use flexbox */
+            justify-content: space-between; /* Push content to both ends */
+            align-items: center;         /* Align vertically */
+            background-color: #f5f5f5; 
+            border-radius: 16px;       
+            padding: 20px;             
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #ddd;    
+        }
+
+        .participant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Style for the info container */
+        .participant-info {
+            display: flex;
+            flex-direction: column; /* Stack name and email */
+        }
+
+        .participant-card p {
+            margin: 8px 0;
+        }
+
+        .participant-card p:first-child {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .participant-card p:last-child {
+            color: #777;
+            font-size: 0.9rem;
+        }
+        /* The Modal (background) */
+        
+        .switch-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            background-color: #3698f4;
+            color: white;
+            white-space: nowrap; /* Prevent button from wrapping */
+        }
+
+        .switch-btn:hover {
+            background-color: #2566a2;
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none; /* Ensures modal is hidden initially */
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Darker background for better focus */
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Modern Modal Content */
+        .modal-content {
+            background: #ffffff;
+            padding: 24px;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Close Button */
+        .close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 24px;
+            color: #555;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Smooth Fade Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Styling */
+        .modal-content form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .modal-content select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .modal-content button {
+            background-color: #3698f4;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .modal-content button:hover {
+            background-color: #2566a2;
+        }
+
+    </style>
+    
+    <link rel="stylesheet" href="/styles/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Info</title>
+</head>
+<body>
+
+<div class="main-content"> 
+    <!-- Left Column: Title + Event Info -->
+    <div class="left-column">
+        
+        <!-- Event Header -->
+        <div class="event-header">
+            <h1><%= event.EventName %></h1>
+            <p><%= moment(event.DateStart).format('dddd, MMMM D, YYYY') %></p>
+        </div>
+
+        <!-- Main Event Details -->
+        <div class="section">
+            
+            <!-- Time Section -->
+            <section class="mb-8">
+                <h2 class="section-title">Time</h2>
+                <div class="info-block">
+                    <p><strong>Report:</strong> <%= moment(event.DateReportTime).format('h:mm A') %></p>
+                    <p><strong>Start:</strong> <%= moment(event.DateStart).format('h:mm A') %></p>
+                    <p><strong>End:</strong> <%= moment(event.DateEnd).format('h:mm A') %></p>
+                    <p><strong>+/- Time:</strong> <%= event.AdjustedTime %></p>
+                    <p><strong>Live Time:</strong> <%= moment(event.LiveTime).format('h:mm A') %></p>
+                </div>
+            </section>
+
+            <!-- Event Info Section -->
+            <section class="mb-8">
+                <h2 class="section-title">Event Info</h2>
+                <div class="info-block">
+                    <p><strong>Location:</strong> <%= event.Location %></p>
+                    <p><strong>Attire:</strong> <%= event.Attire %></p>
+                    <p><strong>Number of PAs:</strong> <%= event.NumOfPAs %></p>
+                    <p><strong>Description:</strong> <%= event.Description %></p>
+                </div>
+            </section>
+
+            <!-- PA Coordinator Section -->
+            <section>
+                <h2 class="section-title">PA Coordinator</h2>
+                <div class="info-block">
+                    <p><strong>Name:</strong> <%= event.PACoordinatorName %></p>
+                    <p><strong>Title:</strong> <%= event.PACoordinatorOffice %></p>
+                    <p><strong>Office:</strong> <%= event.PACoordinatorTitle %></p>
+                    <p><strong>Email:</strong> <%= event.PACoordinatorEmail || "N/A" %></p>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+    <!-- Right Column: Participants -->
+    <div class="section">
+        <h2 class="section-title">Participants</h2>
+        <div class="participant-list">
+            <% userNames.forEach((row) => { %>
+                <div class="participant-card">
+                    <div class="participant-info">
+                        <p><%= row.fName %> <%= row.lName %></p>
+                        <p><%= row.Email %></p>
+                    </div>
+                    <a href="#" class="switch-btn" data-hour-id="<%= Event._id %>">Switch</a>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+</div>
+<!-- Modal for Adjusting Hours -->
+<div id="switchModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Switch Shift</h2>
+        <form action="/SwitchShift" method="POST">
+            <label for="PA">Choose a PA:</label>
+            <select name="PA" id="PA">
+                <% if (allusers.length > 0) { %>
+                    <% allusers.forEach((User) => { %>
+                        <option value="<%= User._id.toString() %>"><%= User.fName %> <%= User.lName %></option>
+                    <% }) %>
+                <% } else { %>
+                    <option>no option</option>
+                <% } %>
+            </select>
+            
+
+            <input type="hidden" id="hourId" name="hourId">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+<script>
+    document.querySelectorAll(".switch-btn").forEach(button => {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            
+            const hourId = event.target.getAttribute("data-hour-id");
+            document.querySelector("#switchModal #hourId").value = hourId;
+
+            // Open modal with animation
+            const modal = document.getElementById("switchModal");
+            modal.style.display = "flex";
+            setTimeout(() => modal.style.opacity = "1", 10);
+        });
+    });
+
+    document.querySelector("#switchModal .close").addEventListener("click", function() {
+        const modal = document.getElementById("switchModal");
+        modal.style.opacity = "0";
+        setTimeout(() => modal.style.display = "none", 300);
+    });
+
+    window.addEventListener("click", function(event) {
+        const modal = document.getElementById("switchModal");
+        if (event.target === modal) {
+            modal.style.opacity = "0";
+            setTimeout(() => modal.style.display = "none", 300);
+        }
+    });
+
+</script>
+
+</body>
+</html>

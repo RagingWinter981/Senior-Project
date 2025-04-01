@@ -189,6 +189,51 @@ router.get("/allEvents",adminCheckLoggedIn, async (req, res) => {
     }
 });
 
+//
+router.get("/view/:id", adminCheckLoggedIn, async (req, res) => {
+    let id = req.params.id;
+    try {
+        const event = await Event.findById(id);
+
+        if (!event) {
+            return res.redirect('/');
+        }
+
+        // Retrieve all hours associated with the event
+        const eventData = await Hours.find({ EventID: event._id });
+
+        // Extract all UserID values
+        const userIds = eventData.map(data => data.UserID);
+
+        // Find all associated emails
+        const userEmails = await LogIn.find({ _id: { $in: userIds } });
+
+        // Extract the email addresses
+        const emails = userEmails.map(user => user.UserName);
+
+        // Find all users with the matching emails
+        const userNames = await UserInfo.find({ Email: { $in: emails } });
+        const allusers = await UserInfo.find({Role: 'President Ambassador'});
+        res.render('AdminViewEvent', { event, userNames, allusers });
+
+    } catch (err) {
+        console.error('Error:', err);
+        res.redirect('/');
+    }
+});
+
+//
+router.post("/SwitchShift", adminCheckLoggedIn, async (req, res) => {
+    const {hourId,Pa } = req.body;
+    // try {
+    //     const updateEvent = Hours.findOneAndUpdate({EventID: hourId,},{UserID: Pa})
+    // }
+
+});
+
+
+
+
 //Request Approval page
 router.get("/RequestEvents",adminCheckLoggedIn, async (req, res) => {
     try {
@@ -529,11 +574,11 @@ router.get("/ViewPaHours", adminCheckLoggedIn, async (req, res) => {
             // Get event names or empty array if none
             const events = hoursForPa.length > 0
                 ? hoursForPa.map(hour => {
-                    const event = eventData.find(e => e._id.toString() === hour.EventID.toString());
+                    const event = eventData.find(
+                        e => e._id.toString() === hour.EventID.toString());
                     return event ? event.EventName : "Unknown Event";
                 })
                 : [];
-
             return {
                 fName: pa.fName,
                 lName: pa.lName,
