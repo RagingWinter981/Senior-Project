@@ -6,7 +6,8 @@ const Event = mongoose.model('Hours', new mongoose.Schema({
   HoursEarned: {type: Number, Required: true,},
   RequestedTime: {type: Number, Required: false,},
   Reasoning: {type: String, Required: false,},
-  Approval: {type: String, required: false,}
+  Approval: {type: String, required: false,},
+  SwitchPA: {type: String, required: false,}
 
 }));
 module.exports = Event;

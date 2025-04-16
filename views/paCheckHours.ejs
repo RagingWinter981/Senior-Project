@@ -493,9 +493,22 @@ button:hover {
     <div class="modal-content">
         <span class="close">&times;</span> 
         <h2>Cancel Registration</h2>
-        <form action="/submitRequestCancelHours" method="POST">
+        <form action="/RequestDeleteEventHours" method="POST">
             <h1>Are you sure you want to request to cancel?</h1>
             <p>Note: This does not mean you have been approved to cancel</p>
+            <p>Explain why you need to cancel the :</p>
+            <div class="form-group">
+                <select name="NewPa" id="NewPa">
+                    <option value="" disabled>Select a PA</option>
+                    <% if (allusers.length > 0) { %>
+                        <% allusers.forEach((User) => { %>
+                            <option value="<%= User._id.toString() %>"><%= User.fName %> <%= User.lName %></option>
+                        <% })} %>
+                    <option value="No one is available">No one is available</option>
+                </select>
+                <label for="reasoning">Reasoning:</label>
+                <textarea id="reasoning" name="reasoning" required></textarea>
+            </div>
             <!-- Hidden input to store the hour ID -->
             <input type="hidden" id="hourId" name="hourId">
             <button type="button" onclick="RequestcancelModal.style.display='none'">Back</button>

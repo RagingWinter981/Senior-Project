@@ -1,182 +1,431 @@
 <%- include('paheader') %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <style>
-        /* General Styling */
-        h1 {
-            /* margin-top: //20px; */
-            color: #333;
-            text-align: center;
-            background-color: #ffffff;
-            padding: 1%;
+        /* General Layout */
+        .container {
+            display: flex;
         }
-        .header {
-            position: sticky;
-            top: 0;
-            padding: 10px 16px;
-            padding-left: 17%;
-            background: #555;
-            color: #f1f1f1;
+
+        /* Sidebar Navigation */
+        .side-nav {
+            width: 250px;
+            background: #2C3E50;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
         }
-        .headerfont {
-            color: #333;
-            text-align: left;
-            background-color: #ffffff;
-            font-size: 30px;
+
+        .side-nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .side-nav ul li {
+            margin: 15px 0;
+        }
+
+        .side-nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .side-nav ul li a.active {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        /* Main Content */
+        .content {
+            margin-left: 270px; /* Adjusts for sidebar width */
+            padding: 20px;
+            width: calc(100% - 270px);
+        }
+
+        /* Sub-Navigation */
+        .sub-nav {
+            background: #f8f9fa;
+            padding: 10px;
+            display: flex;
+            gap: 15px;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .sub-nav a {
+            text-decoration: none;
+            color: #2C3E50;
             font-weight: bold;
         }
-        .main {
-            margin-left: 160px; /* Same as the width of the sidenav */
-            font-size: 28px; /* Increased text to enable scrolling */
-            padding: 0px 10px;
-            display: flex;
-            margin-top: 20px;
+
+        .sub-nav a:hover {
+            text-decoration: underline;
         }
 
-        /* Card container styling */
-        .card-container {
-            display: flex;
-            gap: 20px;
-            margin-left: 17%;
-            padding-right: 10%;
-            padding-top:2%;
-            /* align-content: right; */
-
-        }
-
-        .card {
-            background-color: #fff;
-            border-radius: 8px;
-            border-style: solid;
-            border-color: #807e7e;
-            box-shadow: 10px 4px 8px rgba(0.2, 0.2, 0.2, 0.2);
-            width: 95%;
+        /* Section Styling */
+        section {
             padding: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        table-container {
+            overflow-x: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
             text-align: left;
-            transition: transform 0.3s ease-in-out;
+            border-bottom: 1px solid #ddd;
         }
-
-        .card:hover {
-            transform: translateY(-10px);
+        th {
+            background-color: #2C3E50;
+            color: white;
         }
-
-        .card h2 {
-            color: #000000;
-        }
-
-        .card p {
-            color: #000000;
-            font-size: 14px;
-        }
-
-        /* Add media queries for smaller screens */
-        @media screen and (max-width:720px) {
-            .main-content {
-                flex-direction: column;
-                align-items: center;
-            }
-            .card-container {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .card {
-                width: 80%;
-            }
+        tr:hover {
+            background-color: #f1f1f1;
         }
     </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Information</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 
+    <!-- Main Layout -->
+    <div class="main-content">
+            <!-- Sub-Navigation for This Page -->
+            <div class="sub-nav">
+                <a href="#board-members">Board Members</a>
+                <a href="#leadership">Leadership</a>
+                <a href="#faculty">Faculty</a>
+                <a href="#history">Background</a>
+                <a href="#mission">Mission</a>
+                <a href="#charisms">Marianist Charisms</a>
+                <a href="#uniforms">Uniforms</a>
+            </div>
 
+            <!-- Informational Sections -->
+            <section id="board-members">
+                <h2>Board Members</h2>
+                <h2>University Leadership</h2>
+                <table>
+                    <tr><th>Name</th><th>Title</th></tr>
+                    <tr><td>The Rev. Oscar Vasquez, S.M.</td><td>Chancellor, St. Mary’s University; Provincial, Marianist Province of the United States</td></tr>
+                    <tr><td>Winston Erevelles, Ph.D.</td><td>President, St. Mary’s University</td></tr>
+                </table>
+                
+                <h2>Board Chair & Vice Chairs</h2>
+                <table>
+                    <tr><th>Name</th><th>Title</th></tr>
+                    <tr><td>Lynda Ellis (B.A.S. ’81)</td><td>Chair, St. Mary’s Board of Trustees; Owner & CEO, Capitol Concierge, Inc.</td></tr>
+                    <tr><td>Joseph Diaz, M.D. (B.A. ’79)</td><td>Vice Chair; President & Medical Director, Allergy Asthma & Immunology Associates of South Texas</td></tr>
+                    <tr><td>Sandra Nannini (M.A. ’07)</td><td>Vice Chair; Retired Senior VP, Branch Banking Business Initiatives, Wells Fargo Bank</td></tr>
+                </table>
+                
+                <h2>Board Members</h2>
+                <table>
+                    <tr><th>Name</th><th>Title</th></tr>
+                    <tr><td>Leland T. Blank, Ph.D., P.E. (B.S. ’67)</td><td>Dean Emeritus, American University of Sharjah; Professor Emeritus, Texas A&M University</td></tr>
+                    <tr><td>Brother Edward “Ed” Brink, S.M.</td><td>Vice President for Mission & Rector, Chaminade University</td></tr>
+                    <tr><td>Sara E. Dysart (B.A. ’74, J.D. ’81)</td><td>Attorney, Dysart Law</td></tr>
+                    <tr><td>The Rev. James “Jim” Fitz, S.M.</td><td>Vice President for Mission & Rector, University of Dayton</td></tr>
+                    <tr><td>Brother Francisco González, S.M., M.D.</td><td>President, Colegio San José, Rio Piedras, Puerto Rico</td></tr>
+                    <tr><td>Brother Thomas “Tom” Giardino, S.M.</td><td>Executive Director, Association of Marianist Universities</td></tr>
+                    <tr><td>Tom Grothues (B.B.A. ’91, M.B.A. ’97)</td><td>Owner, Tom G. Consulting Group, LLC</td></tr>
+                    <tr><td>George B. Hernández Jr., J.D. (B.A. ’74)</td><td>Retired President & CEO, University Health System</td></tr>
+                    <tr><td>RaSheeda C. Keir (B.A. ’01, M.A. ’02)</td><td>Real Estate Investor & Contractor</td></tr>
+                    <tr><td>Sister Laura Leming, F.M.I., Ph.D. (B.A. ’79)</td><td>Associate Professor, University of Dayton</td></tr>
+                    <tr><td>Ellen F. Manzullo, M.D., FACP (B.S. ’82)</td><td>Professor of Medicine & Deputy Division Head, Internal Medicine, UT MD Anderson Cancer Center</td></tr>
+                    <tr><td>The Hon. Sandee Bryan Marion (J.D. ’80)</td><td>Retired Chief Justice, Fourth Court of Appeals</td></tr>
+                    <tr><td>Michael “Terry” Martin (B.B.A. ’81)</td><td>Owner & President, Anodyne Wool, Inc.</td></tr>
+                    <tr><td>Christopher “Chris” Martinez (B.B.A. ’00)</td><td>President, Central Electric Enterprises & Co.</td></tr>
+                    <tr><td>Gregory “Greg” J. Mitchell (B.B.A. ’02)</td><td>President, Silver Eagle Beverages</td></tr>
+                    <tr><td>Brother Jesse O’Neill, S.M.</td><td>Assistant for Education, Marianist Province of the United States</td></tr>
+                    <tr><td>Joseph Ojile, M.D. (B.A. ’80)</td><td>President, Caduceus Corporation; Founder & CEO, Clayton Sleep Institute</td></tr>
+                    <tr><td>Steven “Steve” Peña Sr., LL.M. (J.D. ’94)</td><td>Attorney & Shareholder, Davidson Troilo Ream & Garza, P.C.</td></tr>
+                    <tr><td>Brother Bernard Ploeger, S.M., Ph.D.</td><td>Assistant Provincial, Marianist Province of the United States</td></tr>
+                    <tr><td>Katherine Resteiner (M.S. ’94)</td><td>Managing Director/COO, Corporate Development, Intel Corporation</td></tr>
+                    <tr><td>Michael “Mickey” Schott (B.B.A. ’68)</td><td>Retired CPA</td></tr>
+                    <tr><td>Gordon Schutze, M.D. (B.S. ’80)</td><td>Vice Dean, School of Medicine, Baylor College of Medicine</td></tr>
+                    <tr><td>Sean Strater (B.B.A. ’11, M.B.A. ’16)</td><td>Alumni Representative; Lead Process Engineer, USAA</td></tr>
+                    <tr><td>Mary Brennan Stich (B.A. ’78, J.D. ’81)</td><td>Attorney</td></tr>
+                    <tr><td>Thomas C. Washmon (J.D. ’98)</td><td>Law Alumni Representative; President & General Counsel, Privateer Capital Management</td></tr>
+                    <tr><td>Yava Scott (B.B.A. ’77, J.D. ’80)</td><td>Board Chair & CEO, The Tagos Group, LLC</td></tr>
 
-<!-- Main Content Section: Tabs and Cards side-by-side -->
-<div class="main-content">
-    <h1>Resources </h1>
-    <!-- Tab Section -->
-    <div class="header" id="myHeader">
-        <h2>Leadership</h2>
+                    <!-- More members can be added here following the same pattern -->
+                </table>
+                
+                <h2>Trustees Emeriti</h2>
+                <table>
+                    <tr><th>Name</th><th>Title</th><th>Additional Notes</th></tr>
+                    <tr><td>Raymond Carvajal, R.Ph.</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Charles L. Cotrell, Ph.D. (B.A. ’62, M.A. ’64)</td><td>St. Mary’s President Emeritus</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>David Dickson (B.A. ’68)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Brother Richard Dix, S.M. (B.S. ’52)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Stephen M. Dufilho (M.A. ’69)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Charles E. Ebrom (B.B.A. ’52, L.L.B. ’63)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Robert L. Elizondo (B.S. ’67)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Ruben M. Escobedo (B.B.A. ’60)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Rev. David Fleming, S.M. (B.A. ’59)</td><td>Trustee Emeritus</td><td>Awarded posthumously</td></tr>
+                    <tr><td>Kelley Frost (M.A. ’07, Ph.D. ’12)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Bill Greehey (B.B.A. ’60)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>The Rev. Quentin Hakenewerth, S.M.</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Ronald J. Herrmann (B.A. ’57, J.D. ’59)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Edward B. Kelley (B.B.A. ’64)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Rosemary Kowalski</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Pat A. Legan (J.D. ’46)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Thomas M. Mengler</td><td>St. Mary’s President Emeritus</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Mona Mengler</td><td>Honorary Trustee Emerita</td></tr>
+                    <tr><td>The Rev. John A. Leies, S.M., S.T.D.</td><td>St. Mary’s President Emeritus</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Vincent Lin (B.S. ’66, M.A. ’68)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Nancy B. Loeffler</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Al J. Notzon III (B.A. ’60)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Thomas M. O’Connor (B.S.C. ’43)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Philip J. Pfeiffer</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Robert Rosow (B.S.C. ’45)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Antonio “Tony” Sanchez Jr. (B.A. ’65, J.D. ’69)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Phyllis Siegel (B.A. ’79)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Doris A. Slay-Barber (B.A. ’74)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>The Rev. Martin Solma, S.M.</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Sister Gretchen Trautman, F.M.I. (B.A. ’73)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>The Honorable Nelson Wolff (B.B.A. ’66, J.D. ’66)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Rev. James Young, S.M., Ph.D. (B.A. ’36)</td><td>St. Mary’s President Emeritus</td><td>Awarded posthumously</td></tr>
+                    <tr><td>The Rev. Louis J. Blume, S.M.</td><td>Trustee Emeritus</td><td>Awarded posthumously</td></tr>
+                    <tr><td>Leticia Contreras (B.A. ’89)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Martin D. Beirne Jr. (J.D. ’69)</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>The Rev. James L. Heft, S.M.</td><td>Trustee Emeritus</td></tr>
+                    <tr><td>Ray E. Berend (B.B.A. ’67)</td><td>Trustee Emeritus</td><td>Awarded posthumously</td></tr>
+                    <!-- More emeriti can be added here following the same pattern -->
+                </table>
+            </section>
+
+            <section id="leadership">
+                <h2>Leadership</h2>
+                <table>
+                    <tr><th>Name</th><th>Title</th></tr>
+                    <tr><td>Winston Erevelles, Ph.D.</td><td>President</td></tr>
+                    <tr><td>Jason Pierce, Ph.D.</td><td>Provost and Executive Vice President for Academic Affairs</td></tr>
+                    <tr><td>The Rev. John Thompson, S.M., Ed.D.</td><td>Vice President for Mission</td></tr>
+                    <tr><td>Aaron Hanna</td><td>Vice President for Administration and Finance</td></tr>
+                    <tr><td>Joel Lauer</td><td>Vice President for University Advancement</td></tr>
+                    <tr><td>Curtis D. White</td><td>Vice President for Information Services</td></tr>
+                    <tr><td>Tim Bessler, Ed.D.</td><td>Vice President for Student Development and Dean of Students</td></tr>
+                    <tr><td>Ryan Konkright</td><td>Vice President for Enrollment Management</td></tr>
+                    <tr><td>Carolyn Tubbs, Ph.D.</td><td>Vice Provost for Academic Affairs</td></tr>
+                    <tr><td>Colin Marks, J.D.</td><td>Vice Provost for Graduate Education</td></tr>
+                    <tr><td>Stephanie Ward, Ph.D.</td><td>Vice Provost for Student Success and Vocation</td></tr>
+                    <tr><td>William “Bill” Buhrman, Ph.D.</td><td>Associate Vice President for Strategy Research</td></tr>
+                    <tr><td>Stella Silva, Ph.D.</td><td>Associate Vice President for Inclusive Excellence</td></tr>
+                    <tr><td>Lori Swete</td><td>Associate Vice President for Finance</td></tr>
+                    <tr><td>The Rev. William “Bill” Meyer, S.M., D.Min.</td><td>Rector</td></tr>
+                    <tr><td>Robert Coleman</td><td>Executive Director of Athletics</td></tr>
+                    <tr><td>Janet Guadarrama</td><td>Executive Director and Title IX Coordinator, Human Resources</td></tr>
+                    <tr><td>Gina Farrell</td><td>Executive Director of University Marketing and Communications</td></tr>
+                    <tr><td>Dianne Pipes</td><td>Chief of Staff for the President</td></tr>
+                    <tr><td>Patricia Roberts, J.D.</td><td>Dean of the School of Law</td></tr>
+                    <tr><td>Rowena Ortiz-Walters, Ph.D.</td><td>Dean of the Greehey School of Business</td></tr>
+                    <tr><td>Nancy LaGreca, Ph.D.</td><td>Dean of the College of Arts, Humanities and Social Sciences</td></tr>
+                    <tr><td>Teri Beam, Ph.D.</td><td>Dean of the School of Science, Engineering and Technology</td></tr>
+                    <tr><td>Jason King, Ph.D.</td><td>Beirne Director, Center for Catholic Studies</td></tr>
+                </table>
+            </section>
+
+            <section id="faculty">
+                <h2>Faculty</h2>
+                <p>Details about school Faculty...</p>
+            </section>
+
+            <section id="history">
+                <h2>Background</h2>
+                <h3>History</h3>
+                <text> Beginning in 1978/1979, the President’s Ambassadors at St. Mary’s University have demonstrated high levels of leadership and dedication to the university mission and Marianist Charism. 
+                The Ambassadors are a direct representation of the Office of the President as well as the student body. Together these leaders preserve campus traditions, serve as model student-leaders, animate 
+                the Charism, and represent the university across campus and the greater San Antonio community.
+                </text><br><br>
+                <h3>St. Mary’s University President’s Ambassadors Mission</h3>
+                <text>Through the principles of Servant-Leadership, Professionalism and Hospitality, the mission of the President’s Ambassadors is to represent the President and university at St. Mary's at 
+                special events, to promote the vast successes and advancements of the University, and to communicate through all that we do, the virtue of our beloved Marianist heritage.
+                </text>  <br> <br>
+                <h3>Understanding the Organization and its Mission</h3>
+                <text>The President’s Ambassadors are students whose dedication to the mission and advancement of St. Mary’s is expressed through their leadership, service, and hospitality on behalf of the
+                President at University events.
+                </text><br>   <br>
+                <text>Symbolizing the rich cultural, geographic and academic diversity of the student body, the President's Ambassadors perform an essential function in promoting the University by 
+                creating positive impressions and by sharing with guests the values and traditions of St. Mary’s.
+                </text><br><br>
+                <text> As the “public face of the University,” Ambassadors are entrusted with maintaining and promoting the St. Mary’s reputation for quality education, commitment to service, Catholic
+                and Marianist identity and mission.
+                </text> 
+                <text>St. Mary’s University, as a Catholic Marianist University, fosters the formation of people in faith and educates leaders for the common good through community, integrated liberal 
+                arts and professional education, and academic excellence.
+                </text><br><br>
+                <text>While professionalism, leadership, and hospitality are essential for effective service as an Ambassador, it is also important to understand that which sets St. Mary’s apart, 
+                a sense of community and family spirit. This treasured characteristic of Marianist institutions perseveres on our campus and is a part of the St. Mary’s culture.
+                </text><br><br>
+                <text>Historically, contemplation of the dispositions of Mary, our patroness, has tended to give a certain ambiance to the Marianist communities. One time-honored term given to this
+                way of being is “family spirit.” It is often referred to as some “indefinable something” which is nonetheless noticeable, and which makes it comfortable to be in a Marianist community. 
+                Since one of the prime expressions of “family spirit” lies in the sense of community and mutual interdependence and respect which should pervade our enterprise and make ours observably different from other institutions
+                </text> 
+            </section>
+
+            <section id="mission">
+                <h2>Mission</h2>
+                <p>St. Mary’s University, as a Catholic Marianist University, fosters the formation of people in faith and educates leaders for the common good through community, 
+                integrated liberal arts and professional education, and academic excellence.</p><br>
+                <p>The St. Mary’s University mission statement is a reflection of the Characteristics of Marianist Universities. There are five elements that characterize
+                the Marianist approach to education:</p>
+                    <ul>
+                        <li>Educate for formation in faith</li>
+                        <li>Provide an integral quality education</li>
+                        <li>Educate in the family spirit</li>
+                        <li>Educate for service, justice and peace, and integrity of creation</li>
+                        <li>Educate for adaptation and change</li>
+                    </ul>
+            </section>
+
+            <section id="charisms">
+                <h2>Marianist Charisms</h2>
+                <p>Details about the Marianist charisms...</p>
+            </section>
+
+            <section id="uniforms">
+                <h1>Uniform Guidelines</h1>
+
+                <p>The President's Ambassadors have two uniforms:</p>
+                <ul>
+                    <li><strong>Formal Uniform</strong> – The standard uniform, a recognizable symbol of the organization.</li>
+                    <li><strong>Casual Uniform</strong> – Worn at events that allow casual attire.</li>
+                </ul>
+            
+                <h2>Uniform Components</h2>
+                <p>Each Ambassador is issued the following items (<span class="highlight">marked with an asterisk *</span>):</p>
+                <ul>
+                    <li>Navy blue blazer <span class="highlight">*</span></li>
+                    <li>Navy blue PA logo polo shirt <span class="highlight">*</span></li>
+                    <li>Men: Tie <span class="highlight">*</span> / Women: Scarf <span class="highlight">*</span></li>
+                    <li>University logo pin <span class="highlight">*</span></li>
+                    <li>Name tag <span class="highlight">*</span></li>
+                </ul>
+                <p><span class="highlight">Jackets must be returned</span> at the end of membership. All other items are keepsakes. Lost items may require replacement costs.</p>
+            
+                <h2>Ambassador-Provided Items</h2>
+                <p>Ambassadors must provide their own:</p>
+                <ul>
+                    <li>Khaki slacks (men) or khaki skirt/slacks (women)</li>
+                    <li>White business shirt or blouse</li>
+                    <li>Brown or black dress shoes</li>
+                    <li>Coordinating belt</li>
+                </ul>
+            
+                <h2>Men's Uniform</h2>
+                <table>
+                    <tr>
+                        <th>Item</th>
+                        <th>Formal Uniform</th>
+                        <th>Casual Uniform</th>
+                    </tr>
+                    <tr>
+                        <td>Blazer</td>
+                        <td>Navy blue blazer *</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>Shirt</td>
+                        <td>White business shirt</td>
+                        <td>Navy blue PA logo polo shirt *</td>
+                    </tr>
+                    <tr>
+                        <td>Bottoms</td>
+                        <td>Khaki business slacks</td>
+                        <td>Khaki business-casual slacks</td>
+                    </tr>
+                    <tr>
+                        <td>Shoes</td>
+                        <td>Brown or black dress shoes</td>
+                        <td>Dark business casual shoes</td>
+                    </tr>
+                    <tr>
+                        <td>Accessories</td>
+                        <td>St. Mary’s Univ tie *, Univ. logo pin *, name tag *</td>
+                        <td>Name tag *, optional white long-sleeve knit shirt</td>
+                    </tr>
+                </table>
+            
+                <h2>Women's Uniform</h2>
+                <table>
+                    <tr>
+                        <th>Item</th>
+                        <th>Formal Uniform</th>
+                        <th>Casual Uniform</th>
+                    </tr>
+                    <tr>
+                        <td>Blazer</td>
+                        <td>Navy blue blazer *</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>Shirt</td>
+                        <td>Plain white blouse</td>
+                        <td>Navy blue PA logo polo shirt *</td>
+                    </tr>
+                    <tr>
+                        <td>Bottoms</td>
+                        <td>Khaki business skirt</td>
+                        <td>Khaki business-casual slacks or skirt</td>
+                    </tr>
+                    <tr>
+                        <td>Shoes</td>
+                        <td>Nude or black dress shoes</td>
+                        <td>Brown or black business casual shoes</td>
+                    </tr>
+                    <tr>
+                        <td>Accessories</td>
+                        <td>St. Mary’s Univ scarf *, Univ. logo pin *, name tag *</td>
+                        <td>Name tag *, optional white long-sleeve knit shirt</td>
+                    </tr>
+                </table>
+            
+                <h2>Uniform Guidelines</h2>
+                <ul>
+                    <li>Arrive **properly dressed** with all required uniform components.</li>
+                    <li>**Belts** must be worn with pants for men.</li>
+                    <li>Pants and skirts must be **professional in style** (not jeans or corduroy).</li>
+                    <li>Clothing must be **in good condition** (no holes or tears).</li>
+                </ul>
+            
+                <h2>Prohibited Items</h2>
+                <ul>
+                    <li>No **boots, sandals, sneakers, or open-toe platform shoes**.</li>
+                    <li>No **caps or hats** unless otherwise instructed.</li>
+                    <li>No **white shirts with writing or printed images**.</li>
+                </ul>
+            
+                <h2>Grooming Standards</h2>
+                <ul>
+                    <li>**Hair:** Must be **professionally styled** and **naturally colored**.</li>
+                    <li>**Jewelry:** Minimal and professional (gold/silver preferred). No facial piercings except small nose studs.</li>
+                    <li>**Cologne/Perfume:** Should be subtle and not overpowering.</li>
+                    <li>**Facial Hair (Men):** Must be neatly groomed.</li>
+                    <li>**Tattoos:** Allowed if appropriate (no offensive symbols or text).</li>
+                </ul>
+            
+                <h2>Out-of-Uniform Conduct</h2>
+                <p>Even when not in uniform, Ambassadors represent St. Mary’s University and should maintain professional behavior and attire.</p>
+            </div>
+            </section>
+        </div>
     </div>
-        <div class = "main">
-            <div class="card">
-                <h3>President</h3>
-                <p>Name: Winston Erevelles</p>
-            </div>
-        </div>
-        <div class = "main">
-            <div class="card">
-                <h3>Provost and Executive Vice President for Academic Affairs</h3>
-                <p>Name: Jason Pierce, Ph.D.</p>
-            </div>
-        </div>
-        <div class = "main">
-            <div class="card">
-                <h3>Vice President for Mission</h3>
-                <p>Name: The Rev. John Thompson, S.M., Ed.D.</p>
-            </div>
-        </div>
-        <div class = "main">
-            <div class="card">
-                <h3>Vice President for Administration and Finance</h3>
-                <p>Name: Aaron Hanna</p>
-            </div>
-        </div>
-        <div class = "main">
-            <div class="card">
-                <h3>Vice President for University Advancement</h3>
-                <p>Name: Joel Lauer</p>
-            </div>
-        </div>
-        <div class = "main">
-            <div class="card">
-                <h3>Vice President for Information Services</h3>
-                <p>Name: Curtis D. White</p>
-            </div>
-        </div>
-        <div class="header" id="myHeader">
-            <h2>Board of Trustees</h2>
-        </div>
-            <div class = "main">
-                <div class="card">
-                    <h3>Chancellor, St. Mary’s University</h3>
-                    <p>Name: The Rev. Oscar Vasquez, S.M.</p>
-                </div>
-            </div>
-            <div class = "main">
-                <div class="card">
-                    <h3>Chair, St. Mary’s Board of Trustees</h3>
-                    <p>Name: Lynda Ellis</p>
-                </div>
-            </div>
-            <div class = "main">
-                <div class="card">
-                    <h3>Vice Chair of the Board of Trustees</h3>
-                    <p>Name: Joseph Diaz, M.D.</p>
-                </div>
-            </div>
-            <div class = "main">
-                <div class="card">
-                    <h3>Vice Chair of the Board of Trustees</h3>
-                    <p>Name: Sandra Nannini</p>
-                </div>
-            </div>
-            <div class = "main">
-                <div class="card">
-                    <h3>President, St. Mary’s University</h3>
-                    <p>Name: Winston Erevelles, Ph.D.</p>
-                </div>
-            </div>
-            <div class = "main">
-                <div class="card">
-                    <h3>Dean Emeritus, American University of Sharjah</h3>
-                    <p>Name: Leland T. Blank, Ph.D., P.E.</p>
-                </div>
-            </div>
-    
-    
-</div>
-
 
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<%- include('header') %>
+<%- include('paheader') %>
 <html lang="en">
 <head>
     <style>
@@ -254,7 +254,6 @@
                     <p><strong>Start:</strong> <%= moment(event.DateStart).format('h:mm A') %></p>
                     <p><strong>End:</strong> <%= moment(event.DateEnd).format('h:mm A') %></p>
                     <p><strong>+/- Time:</strong> <%= event.AdjustedTime %></p>
-                    <p><strong>Live Time:</strong> <%= moment(event.LiveTime).format('dddd, MMMM D, YYYY - h:mm A') %></p>
                 </div>
             </section>
 
@@ -293,7 +292,7 @@
                         <p><%= row.fName %> <%= row.lName %></p>
                         <p><%= row.Email %></p>
                     </div>
-                    <a href="#" class="switch-btn" data-hour-id="<%= event._id.toString() %>" data-oldpa-id="<%= row._id.toString() %>">Switch</a>
+                    
                 </div>
             <% }) %>
         </div>

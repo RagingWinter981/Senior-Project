@@ -16,7 +16,8 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     padding: 0 20px;
-    margin: 20px auto;
+    /* margin: 20px auto; */
+    margin-bottom: 20px ;
 }
 .search-bar p {
     margin: 0;
@@ -37,7 +38,7 @@
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
-    padding: 20px;
+    /* padding: 20px; */
 }
 .card {
     background-color: #fff;
@@ -168,19 +169,20 @@ button:active {
         <p> Here you can search through events or filter by relevant information. Once you have found your event, you can click to learn more, edit the event, or even delete it.</p>
 
         <!-- Advanced Search Section -->
-        <div class="search-bar">
+        <form class="search-bar" role="search" method="POST" action="/search">
             <p>Name of Event:</p>
-            <input type="text" placeholder="Search by Name">
+            <input type="text" name="searchEventName" placeholder="Search by Name">
             <p>Availability:</p>
-            <select>
+            <select name="searchSpots">
                 <option value="">Filter by Availability</option>
                 <option value="available">Available Spots</option>
                 <option value="full">Full</option>
             </select>
             <p>Date of Event:</p>
-            <input type="date" placeholder="Filter by Date">
-        </div>
-    </div>
+            <input type="date" name= "date" placeholder="Filter by Date">
+            <button> Search</button>
+        </form>
+    
 
 <!-- Cards Section -->
 <div class="card-container">
@@ -201,7 +203,7 @@ button:active {
             <div class="card-section">
                 <h3>PA Information</h3>
                 <p><strong>Location:</strong> <%= row.Location %></p>
-                <p><strong>Credit Hours:</strong> <%= row.NumOfHours %> &nbsp; <strong>Number of Spots:</strong> <%= row.NumOfPAs %></p>                
+                <p><strong>Credit Hours:</strong> <%= row.NumOfHours %> &nbsp; <strong>Number of Spots: </strong><%= eventSignupCounts[row._id] || 0 %> / <%= row.NumOfPAs %></p>         
             </div>
 
 
@@ -221,6 +223,7 @@ button:active {
             </div>
         </div>
     <% }) %>
+</div>
 </div>
 </body>
 </html>

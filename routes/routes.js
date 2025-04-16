@@ -8,6 +8,7 @@ const Hours = require('../models/Hours');
 const Request = require('../models/RequestInfo');
 const bcrypt = require('bcrypt');
 const { adminCheckLoggedIn,paCheckLoggedIn, bypassLogin } = require('../functions');
+const User = require('../models/UserInfo');
 
 
 
@@ -73,25 +74,35 @@ router.post("/Login", async (req, res) => {
             res.send("Username cannot be found")
         }
         const isPwMatch= await bcrypt.compare(req.body.Password, check.Password);
-        if(isPwMatch)
-        {
+        if(isPwMatch){
             req.session.user = {id: check._id, username: check.UserName, type: checktype.Role} 
         if (req.session.user.type == 'Admin'){
             res.redirect("/adminHome")}
         else if(req.session.user.type == 'President Ambassador'){
             res.redirect("/PAHome") }   
+        }else{
+            res.redirect("/Login")
         }
-    }catch{
-
+    }catch(err){
+        console.log("Error at Login: ", err)
+        res.redirect("/Login")
     }
 })
+
+router.get("/logout", (req, res) => {
+    req.session.destroy(() => {
+        res.clearCookie('manfra.io')
+        res.redirect("/Login");
+    });
+  });
+  
 
 
 //Admin Home Page
 router.get("/adminHome",adminCheckLoggedIn, async(req, res) => {
     try{
         const hoursData = await Hours.find();
-        const eventData = await Event.find();
+        const eventData = await Event.find().sort({DateReportTime: 1});
 
         const numofRequest = await Request.countDocuments({
             $or: [
@@ -141,13 +152,7 @@ router.get("/events",adminCheckLoggedIn, (req, res) => {
     res.render("CreateEvent");
 })
 
-router.get("/logout", (req, res) => {
-    req.session.destroy(() => {
-        res.clearCookie('manfra.io')
-        res.redirect("/Login");
-    });
-  });
-  
+
 
 //Admin Create Events Page with Create Function
 router.post("/events",adminCheckLoggedIn, async (req, res) => {
@@ -181,11 +186,71 @@ router.post("/events",adminCheckLoggedIn, async (req, res) => {
 //Fetching Search Events Page
 router.get("/allEvents",adminCheckLoggedIn, async (req, res) => {
     try {
-        const events = await Event.find(); // Fetch data from the database
-        console.log(events); // Log the events to check the structure
-        res.render("AdminSearchEvent", { events });
+        const events = await Event.find().sort({ DateReportTime: 1 }); // Fetch data from the database
+    
+        const eventSignupCounts = {};
+
+        for (const event of events) {
+            const count = await Hours.countDocuments({ EventID: event._id });
+            eventSignupCounts[event._id] = count;
+        }
+        res.render("AdminSearchEvent", { events, eventSignupCounts });
     } catch (err) {
-        res.json({ message: err.message }); // Handle errors
+        console.log("Error with getting AdminSearchEvents: ",err)
+        redirect("/adminHome")
+    }
+});
+
+router.post("/search", adminCheckLoggedIn, async (req, res) => {
+    try {
+        let eventName = req.body.searchEventName;
+        let availability = req.body.searchSpots; // "Available", "Full", or "" for all
+        let date = req.body.date;
+
+        let query = {
+            EventName: { $regex: new RegExp(eventName, "i") }
+        };
+        
+        if (date) {
+            // Convert to date object and match date only (ignoring time)
+            const selectedDate = new Date(date);
+            
+            // Create date range for the selected day
+            const nextDate = new Date(selectedDate);
+            nextDate.setDate(selectedDate.getDate() + 1);
+        
+            query.DateReportTime = {
+                $gte: selectedDate,
+                $lt: nextDate
+            };
+        }
+        
+        const events = await Event.find(query).sort({ DateReportTime: 1 });
+
+        let eventSignupCounts = {};
+        let filteredEvents = [];
+
+        for (const event of events) {
+            const count = await Hours.countDocuments({ EventID: event._id });
+            eventSignupCounts[event._id] = count;
+
+            const isFull = count >= event.NumOfPAs;
+            const isAvailable = count < event.NumOfPAs;
+
+            if (
+                availability === "full" && isFull ||
+                availability === "available" && isAvailable ||
+                availability === "" || !availability // no filter, include all
+            ) {
+                filteredEvents.push(event);
+            }
+        }
+
+        res.render("AdminSearchEvent", { events: filteredEvents, eventSignupCounts });
+
+    } catch (err) {
+        console.log("Error with posting Search: ", err);
+        res.redirect("/allEvents");
     }
 });
 
@@ -207,13 +272,17 @@ router.get("/view/:id", adminCheckLoggedIn, async (req, res) => {
 
         // Find all associated emails
         const userEmails = await LogIn.find({ _id: { $in: userIds } });
+        
 
         // Extract the email addresses
         const emails = userEmails.map(user => user.UserName);
 
         // Find all users with the matching emails
         const userNames = await UserInfo.find({ Email: { $in: emails } });
-        const allusers = await UserInfo.find({Role: 'President Ambassador'});
+        const allusers = await UserInfo.find({
+            Role: 'President Ambassador',
+            Email: { $nin: emails }
+        });
         res.render('AdminViewEvent', { event, userNames, allusers });
 
     } catch (err) {
@@ -224,11 +293,43 @@ router.get("/view/:id", adminCheckLoggedIn, async (req, res) => {
 
 //
 router.post("/SwitchShift", adminCheckLoggedIn, async (req, res) => {
-    const {hourId,Pa } = req.body;
-    // try {
-    //     const updateEvent = Hours.findOneAndUpdate({EventID: hourId,},{UserID: Pa})
-    // }
+    const { hourId, NewPa, OldPa } = req.body;
+    
+    try {
+        // Find the emails of both Old and New PA
+        const oldPaUser = await UserInfo.findById(OldPa);
+        const newPaUser = await UserInfo.findById(NewPa);
+        
+        if (!oldPaUser || !newPaUser) {
+            return res.status(400).send("Invalid User IDs.");
+        }
 
+        const oldPaLogin = await LogIn.findOne({ UserName: oldPaUser.Email });
+        const newPaLogin = await LogIn.findOne({ UserName: newPaUser.Email });
+
+        if (!oldPaLogin || !newPaLogin) {
+            return res.status(400).send("User login not found.");
+        }
+
+        // Update the Hours collection to switch the shift
+        const printUpdate = await Hours.findOne( { EventID: hourId, UserID: oldPaLogin._id })
+        const updatedHour = await Hours.findOneAndUpdate(
+            { EventID: hourId, UserID: oldPaLogin._id },  // Find the existing hour record
+            { UserID: newPaLogin._id },                   // Replace with new PA ID
+            { new: true }
+        );
+
+        if (!updatedHour) {
+            console.log("Event id: ", hourId, "User id: ",oldPaLogin._id )
+            console.log(printUpdate)
+            return res.status(400).send("Shift switch failed.");
+        }
+
+        res.redirect(`/view/${hourId}`);
+    } catch (err) {
+        console.error("Error switching shift:", err);
+        res.status(500).send("Internal Server Error.");
+    }
 });
 
 
@@ -237,12 +338,12 @@ router.post("/SwitchShift", adminCheckLoggedIn, async (req, res) => {
 //Request Approval page
 router.get("/RequestEvents",adminCheckLoggedIn, async (req, res) => {
     try {
-        const requests = await Request.find({ IsEvent: { $exists: false } });
+        const requests = await Request.find({ IsEvent: { $exists: false } }).sort({ReportTime: 1});
 
         // Use MongoDB's $or operator
         const handledrequests = await Request.find({
             $or: [{ IsEvent: "True" }, { IsEvent: "False" }]
-        });
+        }).sort({ReportTime: 1});
 
         res.render("adminRequestEvents", { requests, handledrequests });
     } catch (err) {
@@ -391,7 +492,8 @@ router.get('/delete/:id',adminCheckLoggedIn, async(req,res)=>{
     try {
         const id = req.params.id;
         const deleteEvent = await Event.findByIdAndDelete(id);
-        if (!deleteEvent) {
+        await Hours.deleteMany({EventId: id})
+        if (!(deleteEvent )) {
             return res.redirect('/allEvents');
         }
         res.redirect('/allEvents'); 
@@ -408,7 +510,7 @@ router.get("/ApproveHours",adminCheckLoggedIn, async (req, res) => {
         const hoursData = await Hours.find({Approval: "Waiting for Approval"});
         const eventIds = hoursData.map(hour => hour.EventID);
         const paIds = hoursData.map(pa => pa.UserID);
-        const eventData = await Event.find({ _id: { $in: eventIds } })
+        const eventData = await Event.find({ _id: { $in: eventIds } }).sort({DateReportTime: 1})
         const paData = await LogIn.find({ _id: { $in: paIds } })
 
         res.render('RequestApprovalHours', {hoursData, eventData, paData});
@@ -459,10 +561,6 @@ router.post("/ApprovePAHours", adminCheckLoggedIn, async (req, res) => {
 
         res.render('RequestApprovalHours', { hoursData, eventData, paData });
 
-        console.log("Hours Data:", hoursData);
-        console.log("Event Data:", eventData);
-        console.log("PA Data:", paData);
-
     } catch (err) {
         console.error("Error:", err);  // Log the error for debugging
         req.session.message = {
@@ -472,7 +570,6 @@ router.post("/ApprovePAHours", adminCheckLoggedIn, async (req, res) => {
         res.render('AdminHome');
     }
 });
-
 
 
 //Adjusting hours
@@ -531,13 +628,143 @@ router.post("/AdjustedPAHours", adminCheckLoggedIn, async (req, res) => {
     }
 });
 
+//Request Approval of Hours
+router.get("/RequestCancellation",adminCheckLoggedIn, async (req, res) => {
+    try {
+        const hoursData = await Hours.find({Approval: "Waiting for Removal"});
+        const eventIds = hoursData.map(hour => hour.EventID);
+        const paIds = hoursData.map(pa => pa.UserID);
+        const allusers = await UserInfo.find({Role: "President Ambassador"})
+        const eventData = await Event.find({ _id: { $in: eventIds } }).sort({DateReportTime: 1})
+        const paData = await LogIn.find({ _id: { $in: paIds } })
+
+        res.render('AdminRequestCancel', {hoursData, eventData, paData, allusers});
+        console.log("Hours Data:", hoursData);
+        console.log("Event Data:", eventData);
+        console.log("PA Data:", paData);
+
+    } catch (err) {
+
+    console.error(err);
+    res.status(500).send('Server Error');
+}})
+
+//Request Approval of Hours
+router.post("/ApproveCancellation",adminCheckLoggedIn, async (req, res) => {
+    const { hourId, paId } = req.body;
+    try {
+        // Fetch the hour entry first
+        const update = await Hours.findById(hourId);
+
+        if (!update) {
+            return res.redirect("/adminHome"); }
+        
+        if (update.SwitchPA !== "No one is available") {
+            //Getting correct ID
+            const paInfo = await UserInfo.findById(paId);
+            if (!paInfo) {
+                return res.status(404).send("PA not found");}
+            const userEmail = paInfo.Email;
+            
+            // Now find the Login document using that email
+            const loginUser = await LogIn.findOne({ UserName: userEmail }); // Adjust the model name if needed
+            if (!loginUser) {
+                return res.status(404).send("Login info not found");}
+            
+            // Now set the new data
+            const newData = {
+                UserID: loginUser._id, // This is what you're looking for
+                SwitchPA: null,
+                Approval: null,
+                Reasoning: "Credit hours met",};
+            
+            await Hours.findByIdAndUpdate(hourId, { $set: newData });
+        } else {
+            await Hours.findByIdAndDelete(hourId);
+        }  
+        res.redirect("/RequestCancellation")
+
+    } catch(err){
+        console.log("Approve Cancellation Error: ", err)
+        res.redirect("/RequestCancellation")
+    }
+})
+
+////Request Approval of Hours
+router.post("/AdjustedCancellation",adminCheckLoggedIn, async (req, res) => {
+    const { hourId, NewPa } = req.body;
+    try {
+        // Fetch the hour entry first
+        const update = await Hours.findById(hourId);
+
+        if (!update) {
+            return res.redirect("/adminHome"); }
+        
+        if (NewPa !== "No one is available") {
+            //Getting correct ID
+            const paInfo = await UserInfo.findById(NewPa);
+            if (!paInfo) {
+                return res.status(404).send("PA not found");}
+            const userEmail = paInfo.Email;
+            
+            // Now find the Login document using that email
+            const loginUser = await LogIn.findOne({ UserName: userEmail }); // Adjust the model name if needed
+            if (!loginUser) {
+                return res.status(404).send("Login info not found");}
+            
+            // Now set the new data
+            const newData = {
+                UserID: loginUser._id, // This is what you're looking for
+                SwitchPA: null,
+                Approval: null,
+                Reasoning: "Credit hours met",};
+            
+            await Hours.findByIdAndUpdate(hourId, { $set: newData });
+        } else {
+            await Hours.findByIdAndDelete(hourId);
+        }  
+        res.redirect("/RequestCancellation")
+
+    } catch(err){
+        console.log("Approve Cancellation Error: ", err)
+        res.redirect("/RequestCancellation")
+    }
+})
+
+router.post("/denialCancellation",adminCheckLoggedIn, async (req, res) => {
+    const { hourId } = req.body;
+    try {
+        // Fetch the hour entry first
+        const update = await Hours.findById(hourId);
+
+        if (!update) {
+            return res.redirect("/adminHome"); }
+        
+            // Now set the new data
+            const newData = {
+                SwitchPA: null,
+                Approval: null,
+                Reasoning: "Credit hours met",};
+            
+            await Hours.findByIdAndUpdate(hourId, { $set: newData });
+       
+        res.redirect("/RequestCancellation")
+
+    } catch(err){
+        console.log("Approve Cancellation Error: ", err)
+        res.redirect("/RequestCancellation")
+    }
+
+})
+
+
 //Get Accounts
 router.get("/accounts",adminCheckLoggedIn, async (req, res) => {
 
 
     try {
-        const usersAdmin = await UserInfo.find({ Role: 'Admin' }); // Query the database
-        const users = await UserInfo.find({ Role: 'President Ambassador' });
+        const usersAdmin = await UserInfo.find({ Role: 'Admin' }).sort({lName: 1, fName: 1}); // Query the database
+        const users = await UserInfo.find({ Role: 'President Ambassador' }).sort({lName: 1, fName: 1});
         res.render('Accounts', { usersAdmin, users }); // Pass data to EJS template
          // Query the database
         // res.render('Accounts', { users }); // Pass data to EJS template
@@ -551,13 +778,13 @@ router.get("/accounts",adminCheckLoggedIn, async (req, res) => {
 router.get("/ViewPaHours", adminCheckLoggedIn, async (req, res) => {
     try {
         // Fetch all PAs
-        const paData = await UserInfo.find({Role: 'President Ambassador'});
+        const paData = await UserInfo.find({Role: 'President Ambassador'}).sort({lName: 1, fName: 1});
 
         // Fetch related data
         const approvedHours = await Hours.find({ Approval: "Approved" });
         const paUser = await LogIn.find();
         const eventIds = approvedHours.map(hour => hour.EventID);
-        const eventData = await Event.find({ _id: { $in: eventIds } });
+        const eventData = await Event.find({ _id: { $in: eventIds } }).sort({DateReportTime:1});
 
         // 💡 Map all PAs, even those without approved hours
         const paHoursData = paData.map(pa => {
@@ -783,8 +1010,8 @@ router.get("/paAddEvents",paCheckLoggedIn, async (req, res) => {
         //all events    
         console.log("Pa Events page")    
         const userId = req.session.user.id; 
-        const events = await Event.find(); // Fetch data from the database
-
+        const events = await Event.find({DateReportTime:  { $gt: new Date() } }).sort({DateReportTime: 1}); // Fetch data from the database
+        const pastEvents = await Event.find({DateReportTime:  { $lt: new Date() } }).sort({DateReportTime: 1});
         //signed up for events
         const userSignups = await Hours.find({ UserID: userId });
         const signedUpEventIds = new Set(userSignups.map(signup => signup.EventID.toString()));
@@ -798,7 +1025,7 @@ router.get("/paAddEvents",paCheckLoggedIn, async (req, res) => {
         }
         //past events 
 
-        res.render("paAddEvents", { events,signedUpEventIds, eventSignupCounts });
+        res.render("paAddEvents", { events,signedUpEventIds, eventSignupCounts, pastEvents });
     } catch (err) {
         res.json({ message: err.message }); // Handle errors
     }
@@ -820,30 +1047,50 @@ router.get('/paSignup/:id', paCheckLoggedIn,async(req,res)=>{
         await Signup.save();
         console.log("Event saved:", Signup.toObject());
 
-        //all events        
-        const userId = req.session.user.id; 
-        const events = await Event.find(); // Fetch data from the database
-
-        //signed up for events
-        const userSignups = await Hours.find({ UserID: userId });
-        const signedUpEventIds = new Set(userSignups.map(signup => signup.EventID.toString()));
-
-        // number of spots
-        const eventSignupCounts = {};
-
-        for (const event of events) {
-            const count = await Hours.countDocuments({ EventID: event._id });
-            eventSignupCounts[event._id] = count;
-        }
-        //past events 
-
-        res.render("paAddEvents", { events,signedUpEventIds, eventSignupCounts });
+        res.redirect("/paAddEvents")
     } catch (err) {
         console.log("Error:", err);
         res.json({ message: err.message, Type: 'danger' });
     }
 
 })
+
+//
+router.get("/paView/:id", paCheckLoggedIn, async (req, res) => {
+    let id = req.params.id;
+    try {
+        const event = await Event.findById(id);
+
+        if (!event) {
+            return res.redirect('/');
+        }
+
+        // Retrieve all hours associated with the event
+        const eventData = await Hours.find({ EventID: event._id });
+
+        // Extract all UserID values
+        const userIds = eventData.map(data => data.UserID);
+
+        // Find all associated emails
+        const userEmails = await LogIn.find({ _id: { $in: userIds } });
+        
+
+        // Extract the email addresses
+        const emails = userEmails.map(user => user.UserName);
+
+        // Find all users with the matching emails
+        const userNames = await UserInfo.find({ Email: { $in: emails } });
+        const allusers = await UserInfo.find({
+            Role: 'President Ambassador',
+            Email: { $nin: emails }
+        });
+        res.render('paViewEvent', { event, userNames, allusers });
+
+    } catch (err) {
+        console.error('Error:', err);
+        res.redirect('/');
+    }
+});
 
 
 
@@ -853,7 +1100,7 @@ router.get("/paCheckHours",paCheckLoggedIn, async (req, res) => {
             const userId = req.session.user.id
             const hoursData = await Hours.find({ UserID: userId });
             const eventIds = hoursData.map(hour => hour.EventID);
-            const eventData = await Event.find({ _id: { $in: eventIds } })
+            const eventData = await Event.find({ _id: { $in: eventIds } }).sort({ DateReportTime: 1 });
 
             const currentDate = new Date();
             const futureEvents = eventData.filter(event => new Date(event.DateReportTime) > currentDate);
@@ -868,8 +1115,12 @@ router.get("/paCheckHours",paCheckLoggedIn, async (req, res) => {
                 const hourEntry = hoursData.find(hour => hour.EventID.toString() === event._id.toString());
                 return hourEntry && hourEntry.Approval !== "Approved";
             });
+            //const userNames = await UserInfo.find({ Email: { $in: emails } });
+            const allusers = await UserInfo.find({
+                Role: 'President Ambassador',
+            });
 
-            res.render('paCheckHours', { hoursData, ApprovedEvents, PendingEvents, futureEvents });
+            res.render('paCheckHours', { hoursData, ApprovedEvents, PendingEvents, futureEvents, allusers});
         } catch (err) {
 
         console.error(err);
@@ -880,7 +1131,7 @@ router.get("/paCheckHours",paCheckLoggedIn, async (req, res) => {
 
 // Adjusting Hours
 router.post("/submitAdjustedHours", paCheckLoggedIn, async (req, res) => {
-    const { hourId, hours, reasoning } = req.body;
+    const { hourId, hours, reasoning, NewPa } = req.body;
     try {
         // Find the hour entry by ID and update it
         const hourEntry = await Hours.findByIdAndUpdate(hourId, {
@@ -888,42 +1139,19 @@ router.post("/submitAdjustedHours", paCheckLoggedIn, async (req, res) => {
             Reasoning: reasoning,
             Approval: "Waiting for Approval",
         });
-
-        const userId = req.session.user.id
-            const hoursData = await Hours.find({ UserID: userId });
-            const eventIds = hoursData.map(hour => hour.EventID);
-            const eventData = await Event.find({ _id: { $in: eventIds } })
-
-            const currentDate = new Date();
-            const futureEvents = eventData.filter(event => new Date(event.DateReportTime) > currentDate);
-            const completedEvents = eventData.filter(event => new Date(event.DateReportTime) <= currentDate);
-
-            const ApprovedEvents = completedEvents.filter(event => {
-                const hourEntry = hoursData.find(hour => hour.EventID.toString() === event._id.toString());
-                return hourEntry && hourEntry.Approval === "Approved";
-            });
-
-            const PendingEvents = completedEvents.filter(event => {
-                const hourEntry = hoursData.find(hour => hour.EventID.toString() === event._id.toString());
-                return hourEntry && hourEntry.Approval !== "Approved";
-            });
-
-            res.render('paCheckHours', { hoursData, ApprovedEvents, PendingEvents, futureEvents });
-
+            res.redirct('/paCheckHours')
         if (hourEntry) {
             req.session.message = {
                 type: 'success',
                 message: 'Event updated successfully',
             };
-            // Pass the updated data back to the view
-            res.render('paCheckHours', { hoursData, futureEvents, completedEvents });
+            res.redirct('paCheckHours')
         } else {
             req.session.message = {
                 type: 'danger',
                 message: 'Event not found',
             };
-            // Pass the updated data back to the view
-            res.render('paCheckHours', { hoursData, futureEvents, completedEvents });
+            res.redirct('paCheckHours')
         }
     } catch (err) {
         req.session.message = {
@@ -946,41 +1174,17 @@ router.post("/submitApprovalHours", async (req, res) => {
             Approval: "Waiting for Approval",
         });
 
-        const userId = req.session.user.id
-            const hoursData = await Hours.find({ UserID: userId });
-            const eventIds = hoursData.map(hour => hour.EventID);
-            const eventData = await Event.find({ _id: { $in: eventIds } })
-
-            const currentDate = new Date();
-            const futureEvents = eventData.filter(event => new Date(event.DateReportTime) > currentDate);
-            const completedEvents = eventData.filter(event => new Date(event.DateReportTime) <= currentDate);
-
-            const ApprovedEvents = completedEvents.filter(event => {
-                const hourEntry = hoursData.find(hour => hour.EventID.toString() === event._id.toString());
-                return hourEntry && hourEntry.Approval === "Approved";
-            });
-
-            const PendingEvents = completedEvents.filter(event => {
-                const hourEntry = hoursData.find(hour => hour.EventID.toString() === event._id.toString());
-                return hourEntry && hourEntry.Approval !== "Approved";
-            });
-
-            res.redirect('/paCheckHours')//, { hoursData, ApprovedEvents, PendingEvents, futureEvents });
+            res.redirct('/paCheckHours')
 
         if (hourEntry) {
             req.session.message = {
                 type: 'success',
-                message: 'Event updated successfully',
-            };
-            // Pass the updated data back to the view
+                message: 'Event updated successfully',};
             res.redirect('/paCheckHours') //, { hoursData, futureEvents, completedEvents });
         } else {
             req.session.message = {
                 type: 'danger',
-                message: 'Event not found',
-            };
-            // Pass the updated data back to the view
-            //res.render('paCheckHours', { hoursData, futureEvents, completedEvents });
+                message: 'Event not found',};
             res.redirect('/paCheckHours');
         }
     } catch (err) {
@@ -1004,8 +1208,7 @@ router.post('/DeleteEventHours', paCheckLoggedIn, async (req, res) => {
         if (!hourEntry) {
             return res.redirect('/PAHome');
         }
-        
-            res.redirect('/paCheckHours');
+        res.redirect('/paCheckHours');
         
     } catch (err) {
         req.session.message = {
@@ -1017,11 +1220,41 @@ router.post('/DeleteEventHours', paCheckLoggedIn, async (req, res) => {
     }
 });
 
-//Requesting To cancel Registration
+// Canceling Request to cancel Registration
+router.post('/RequestDeleteEventHours', paCheckLoggedIn, async (req, res) => {
+    const { hourId, reasoning, NewPa } = req.body;
+    try {
+        // Find the hour entry by ID and update it
+        const hourEntry = await Hours.findByIdAndUpdate(hourId, {
+            Reasoning: reasoning,
+            Approval: "Waiting for Removal",
+            SwitchPA: NewPa, });
+
+            res.redirct('paCheckHours')
+
+        if (hourEntry) {
+            req.session.message = {
+                type: 'success',
+                message: 'Event updated successfully',};
+            res.redirect('/paCheckHours') //, { hoursData, futureEvents, completedEvents });
+        } else {
+            req.session.message = {
+                type: 'danger',
+                message: 'Event not found',};
+            res.redirect('/paCheckHours');
+        }
+    } catch (err) {
+        req.session.message = {
+            type: 'danger',
+            message: err.message,
+        };
+        // Pass the data back to the view even in case of an error
+        res.redirect('/paCheckHours');
+    }
+});
 
 //PA Resources Page
 router.get("/paResources",paCheckLoggedIn, (req, res) => {
-    console.log("I dont understand")
     res.render("paResources");
 })
 

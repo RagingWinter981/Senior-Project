@@ -138,7 +138,7 @@
   .nav-links li a{
     color:#fff;
     text-decoration: none;
-    padding: 10px 14px;
+    padding: 5px 1px;
     display: flex;
     align-items: center;
   }
@@ -157,7 +157,7 @@
   background: #fff;
   align-items: center;
   width: 80%; /* Adjust width as needed */
-  height: 47px;
+  height: 40px;
   position: absolute;
   left: 50%; /* Center horizontally */
   transform: translateX(-50%); /* Adjust position to be centered */
@@ -175,27 +175,30 @@
     display: block;
   }
   .nav-links li:nth-child(1):hover ~  .active{
-    top: 2%;
-    
+    top: 1.5%;
   }
   .nav-links li:nth-child(2):hover ~  .active{
-    top: 16%;
+    top: 14%;
   }
   .nav-links li:nth-child(3):hover ~  .active{
-    top: 30%;
+    top: 26.5%;
   }
   .nav-links li:nth-child(4):hover ~  .active{
-    top: 44.5%;
+    top: 39%;
   }
   .nav-links li:nth-child(5):hover ~  .active{
-    top: 59%;
+    top: 51.5%;
   }
   .nav-links li:nth-child(6):hover ~  .active{
-    top: 73%;
+    top: 64%;
   }
   .nav-links li:nth-child(7):hover ~  .active{
-    top: 87%;
+    top: 76.5%;
   }
+  .nav-links li:nth-child(8):hover ~  .active{
+    top: 89%;
+  }
+
   .main-content {
   margin-top: 60px;
   margin-left: 260px;
@@ -237,6 +240,7 @@
           <li><a href="/RequestEvents"><span class="material-icons">input</span>Request Events</a></li>
           <li><a href="/allEvents"><span class="material-icons">search</span>Search Events</a></li>
           <li><a href="/ApproveHours"><span class="material-icons">event_available</span> Approve Hours</a></li>
+          <li><a href="/RequestCancellation"><span class="material-icons">event_busy</span> Cancellation Request </a></li>
           <li><a href="/ViewPaHours"><span class="material-icons"> groups </span> PA Hours</a></li>
           <li><a href="/accounts"><span class="material-icons"> manage_accounts </span> Manage Accounts</a></li>
           <div class="active"></div>
