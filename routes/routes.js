@@ -7,10 +7,9 @@ const LogIn = require('../models/LogIn');
 const Hours = require('../models/Hours');
 const Request = require('../models/RequestInfo');
 const bcrypt = require('bcrypt');
-const { adminCheckLoggedIn,paCheckLoggedIn, bypassLogin } = require('../functions');
-const User = require('../models/UserInfo');
-
-
+const { adminCheckLoggedIn,paCheckLoggedIn, bypassLogin, adminOrPACheckLoggedIn } = require('../utils/functions');
+const crypto = require("crypto");
+const transporter = require('../utils/mailer');
 
 /********************** */
 // Guest Pages
@@ -59,12 +58,131 @@ router.post("/RequestAnEvent", async(req, res) => {
 /*********************** */
 
 router.get("/",adminCheckLoggedIn, (req, res) => {
+    console.log('User initials:', res.locals.userInitals);
     res.redirect('AdminHome');
 })
 
 router.get("/Login",bypassLogin, async (req, res) => {
     res.render('index');
 })
+
+router.get("/forgotPassword", async (req, res) => {
+    res.render("forgotPassword");
+})
+
+router.post("/ForgotPassword", async (req, res) => {
+    try{
+        const Email = req.body.email
+
+        const user = await LogIn.findOne({
+            UserName: Email
+        })
+        if(!user){
+            //Modal box
+            res.redirect("forgotPassword");
+        }
+        //Generate Random 6 digit code
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+        user.PasswordResetToken = code;
+        user.PasswordResetExpires = Date.now() + 10 * 60 * 1000;
+        await user.save();
+
+        // Email the code
+        const mailOptions = {
+            from: "quixy4101@gmail.com",
+            to: Email,
+            subject: "PA Password Reset Code",
+            text: `Please use this 6-digit code to reset your password: ${code}\n\nIf this wasn't you, please contact your administrator.`,
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        res.redirect(`/enterCode?email=${encodeURIComponent(Email)}`);
+    }
+    catch(err){
+        console.log("Problem with Forgot Password: ", err)
+    }
+})
+router.get("/enterCode", async (req, res) => {
+    const email = req.query.email;
+    res.render("ForgotNewPassword", { email });
+});
+router.post("/verify-reset-code", async (req, res) => {
+    try {
+        const { email, code, password } = req.body;
+
+        // Find the user by email
+        const user = await LogIn.findOne({ UserName: email });
+
+        if (!user) {
+            return res.status(400).send("User not found.");
+        }
+
+        // Check if the reset token exists and is not expired
+        if (!user.PasswordResetToken || user.PasswordResetExpires < Date.now()) {
+            return res.status(400).send("Reset token has expired or is invalid.");
+        }
+
+        // Verify the reset code
+        if (user.PasswordResetToken !== code) {
+            return res.status(400).send("Invalid reset code.");
+        }
+
+        const salt = await bcrypt.genSalt(10); // Generate salt
+        const hashedPassword = await bcrypt.hash(password, salt); // Hash the password
+
+        // Update the password and clear reset token/expiration fields
+        user.Password = hashedPassword;
+        user.PasswordResetToken = undefined; // Clear the reset token after it’s used
+        user.PasswordResetExpires = undefined; // Clear the expiration time
+        await user.save();
+
+        // You could send a success message or redirect to a login page
+        res.redirect("/login"); // Redirecting to login page for example
+    } catch (err) {
+        console.log("Error with reset password:", err);
+        res.status(500).send("Server error.");
+    }
+
+})
+router.get("/changePassword", adminOrPACheckLoggedIn, async (req, res) => {
+    res.render("changePassword")
+})
+
+router.post("/changePassword", adminOrPACheckLoggedIn, async (req, res) => {
+    try {
+      const userId = req.session.user.id;
+      const currentPass = req.body.currentPassword;
+      const newPass = req.body.password;
+  
+      const user = await LogIn.findById(userId);
+      if (!user) return res.render("changePassword", { errorType: "incorrect" });
+  
+      const match = await bcrypt.compare(currentPass, user.Password);
+      if (!match) return res.render("changePassword", { errorType: "incorrect" });
+  
+      const hashedNewPass = await bcrypt.hash(newPass, 10);
+      await LogIn.findByIdAndUpdate(userId, { Password: hashedNewPass });
+  
+      // Destroy session after password change for security
+      req.session.destroy(err => {
+        if (err) {
+          console.error("Session destruction failed:", err);
+          return res.render("changePassword", { errorType: "success" }); // fallback
+        }
+  
+        // Show success modal, then redirect from frontend
+        res.render("changePassword", { errorType: "success" });
+      });
+  
+    } catch (err) {
+      console.error("Password update error:", err);
+      res.status(500).send("Server error");
+    }
+  });
+  
+
 
 router.post("/Login", async (req, res) => {
     try{
@@ -95,7 +213,52 @@ router.get("/logout", (req, res) => {
         res.redirect("/Login");
     });
   });
+
+
+// GET route to display the password reset form
+router.get("/create-password/:token", async (req, res) => {
+    const token = req.params.token;
+    const user = await LogIn.findOne({
+        PasswordResetToken: token,
+        PasswordResetExpires: { $gt: Date.now() } // Token still valid
+    });
   
+    if (!user) {
+        console.log("user tried token: ", token)
+        return res.send("Token is invalid or has expired.");
+    }
+    res.render("createPassword", { token }); // Render the form and pass the token along
+});
+  
+// POST route to handle the password reset
+router.post("/create-password", async (req, res) => {
+    const { password, token } = req.body;
+
+    // Make sure the password is not empty or invalid
+    if (!password || password.length < 6) {
+        return res.send("Password must be at least 6 characters.");
+    }
+
+    const user = await LogIn.findOne({
+        PasswordResetToken: token,
+        PasswordResetExpires: { $gt: Date.now() } // Token still valid
+    });
+  
+    if (!user) {
+        return res.send("Token is invalid or has expired.");
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.Password = hashedPassword;
+    user.PasswordResetToken = undefined;  // Remove the reset token after use
+    user.PasswordResetExpires = undefined; // Expiration date should also be removed
+    await user.save();
+  
+    // Redirect to login page or render a success message
+    res.redirect('/login'); // Or render a success message if you prefer
+});
+
 
 
 //Admin Home Page
@@ -140,7 +303,6 @@ router.get("/adminHome",adminCheckLoggedIn, async(req, res) => {
                 { LiveTime: { $lte: currentDate } },
                 { DateEnd: { $gte: currentDate}}  ]
         });
-
 
         // Render the page with data
         res.render("AdminHome", { Approvals, numofRequest, LiveEvents,futureEvents });
@@ -331,9 +493,6 @@ router.post("/SwitchShift", adminCheckLoggedIn, async (req, res) => {
         res.status(500).send("Internal Server Error.");
     }
 });
-
-
-
 
 //Request Approval page
 router.get("/RequestEvents",adminCheckLoggedIn, async (req, res) => {
@@ -833,50 +992,50 @@ router.get("/NewUser",adminCheckLoggedIn, (req, res) => {
 //Create new Account Functionality
 router.post("/NewUser", adminCheckLoggedIn, async (req, res) => {
     const existingUser = await UserInfo.findOne({Email: req.body.Email,})
-    
     if(existingUser){
         res.send("User already exists. Please choose a different method.")
     }
-    else{
-        try {
-            const saltRounds = 10; 
-            const hashedPw = await bcrypt.hash("1234", saltRounds);
+    try {
+        const token = crypto.randomBytes(32).toString('hex');
+        const tokenExpiry = Date.now() + 2000 * 60 * 60;
+        const saltRounds = 10; 
+        const hashedPw = await bcrypt.hash("placeholder", saltRounds);
             
-            console.log("Hashed Password: ", hashedPw)
-            const data ={
-                UserName: req.body.Email, 
-                Password: hashedPw,}
+        const userLogin = await LogIn.create({
+            UserName: req.body.Email,
+            Password: hashedPw,
+            PasswordResetToken: token,
+            PasswordResetExpires: tokenExpiry,
+          });
 
-        //Hash the password using bycrypt
-        const userdate = await LogIn.create(data);
-        console.log("Login saved:", userdate.toObject()); // Log event to ensure it's saved
-        
-        // res.redirect('/Accounts');
-        } catch (err) {
-            console.log("Error:", err);
-            res.json({ message: err.message, Type: 'danger' });
-        }
+        const user = new UserInfo({
+            UserID: req.body.UserID,
+            fName: req.body.fName,
+            lName: req.body.lName,
+            GraduationSemester: req.body.GraduationSemester,
+            GraduationYear: req.body.GraduationYear,
+            Email: req.body.Email,           
+            Role: req.body.Role,
+            GolfCart: req.body.GolfCart,
+        });
+        await user.save();
 
-        try {
-            const user = new UserInfo({
-                UserID: req.body.UserID,
-                fName: req.body.fName,
-                lName: req.body.lName,
-                GraduationSemester: req.body.GraduationSemester,
-                GraduationYear: req.body.GraduationYear,
-                Email: req.body.Email,           
-                Role: req.body.Role,
-                GolfCart: req.body.GolfCart,
+        const resetLink = `http://localhost:3000/create-password/${token}`;
+        const mailOptions = {
+            from: "quixy4101@gmail.com",
+            to: req.body.Email,
+            subject: "Set up your PA account password",
+            text: `Welcome! Click the following link to create your password: ${resetLink}`,
+        };
 
-            });
-            await user.save();
-            console.log("Event saved:", user.toObject()); // Log event to ensure it's saved
-            res.redirect('/Accounts');
-        } catch (err) {
-            console.log("Error:", err);
-            res.json({ message: err.message, Type: 'danger' });
-        }
-    }
+        await transporter.sendMail(mailOptions);
+
+        console.log("Email sent and user created!");
+        res.redirect('/Accounts');
+    } catch (err) {
+    console.error("Error:", err);
+    console.log("Error when creating user: ", err);
+    res.json({ message: err.message, Type: 'danger' });}
 });
 
 // Rendering Editing User Page
@@ -940,17 +1099,26 @@ router.post('/editUser/:id',adminCheckLoggedIn, async (req, res) => {
 
 //Delete User
 router.get('/deleteUser/:id',adminCheckLoggedIn, async(req,res)=>{
-    let id = req.params.id;
+    //let id = req.params.id;
     try {
         const id = req.params.id;
-        const deleteUser = await UserInfo.findByIdAndDelete(id);
-        if (!deleteUser) {
-            return res.redirect('/Accounts');
-        }
-        res.redirect('/Accounts'); 
+    
+        // Step 1: Find the UserInfo document to get the email
+        const userInfo = await UserInfo.findById(id);
+        if (!userInfo) {
+            return res.redirect('/Accounts');}
 
+        const userEmail = userInfo.Email;
+    
+        // Step 2: Delete from UserInfo
+        await UserInfo.findByIdAndDelete(id);
+    
+        // Step 3: Delete the matching login using the email
+        await LogIn.findOneAndDelete({ UserName: userEmail });
+    
+        res.redirect('/Accounts');
     } catch (err) {
-        // If there's an error, redirect to the home page
+        console.error("Error deleting user:", err);
         res.redirect('/');
     }
 });

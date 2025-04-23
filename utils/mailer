@@ -1,0 +1,10 @@
+const nodemailer = require("nodemailer");
+
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'quixy4101@gmail.com',         // Your Gmail address
+    pass: "kfhuyxyqenpkgayf",} // app password you generated
+});
+
+module.exports = transporter;

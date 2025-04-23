@@ -22,7 +22,7 @@
 
   /* Navbar Styling */
   .navbar {
-      height: 50px;
+      height: 60px;
       display: flex;
       justify-content: right;
       background-color: #ffffff;
@@ -32,7 +32,7 @@
       left: 0;
       right: 0;
       z-index: 1;
-      box-shadow: 0 0 10px rgba(168, 168, 168, 0.4);
+      box-shadow: 0 0 10px rgba(70, 70, 70, 0.4);
     }
     .navbar a {
       color: #fff;
@@ -41,41 +41,74 @@
       text-decoration: none;
       border-radius: 25px;
       font-size: 16px;
+      margin-bottom: 20px;
+      
     }
 
     .navbar a:hover {
-      background-color: #3e0d0d;
+      background-color: #040c42;
       color: #fff;
     }
+    .user-profile {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      margin-top: 5px;
+      margin-right: 30px;
+      position: relative;
+      display: inline-block;
+      background-color: rgb(215, 236, 254);
+      box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.35);
+      
+    }
+    .profile-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    /* background-image: url('your-profile-pic.jpg'); Replace with your path */
+    background-size: cover;
+    background-position: center;
+  }
 
-   /* Logout Button */
-   .btn-outline-danger {
-    height: 40px;                            /* Fixed height */
-    width: auto;                              /* Auto width based on content */
-    margin: 5px 5px 0 0;                      /* Compact margins */
-    background-color: #dc3545;                /* Bootstrap danger color */
-    border: 2px solid #dc3545;                /* Matching border */
-    color: white;                             /* White text color */
-    border-radius: 4px;                       /* Less rounded edges */
-    transition: background-color 0.3s, border-color 0.3s; 
-    font-size: 20px;                          /* Small text size */
-    text-align: center;                       /* Center the text horizontally */
-    display: inline-flex;                     /* Inline-flex for centering */
-    justify-content: center;                  /* Center horizontally */
-    align-items: center;                      /* Center vertically */
-    text-decoration: none;                    /* Remove underline */
-    padding: 0 15px;                          /* Add side padding for consistency */
-}
+    /* Modern dropdown content */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 50px; /* This places it under the navbar */
+      right: 0;
+      background-color: white;
+      /* border-radius: 2px; */
+      min-width: 180px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      font-size: 14px;
+    }
 
-.btn-outline-danger:hover {
-  background-color: #c82333;  /* Darker red when hovered */
-  border-color: #c82333;  /* Darker red for border on hover */
-}
+    /* Dropdown item style */
+    .dropdown-content a {
+      color: #1c1b1b;
+      padding: 8px 12px; /* more natural touch space */
+      margin: 0;          /* removes default margin */
+      text-decoration: none;
+      display: block;
+      font-size: 14px;
+      line-height: 1.5;    /* controls vertical spacing */
+      transition: background 0.3s;
+    }
 
+    .dropdown-content a:hover {
+      background-color: #b0b0b0;
+    }
 
-  .sidenav {
+    /* Show dropdown on hover */
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .sidenav {
     height: 100%; /* Full-height: remove this if you want "auto" height */
-    width: 50px; /* Set the width of the sidebar */
+    width: 60px; /* Set the width of the sidebar */
     background: #030518; /* Black */
     position: Fixed; /* Fixed Sidebar (stay in place on scroll) */
     top: 0; /* Stay at the top */
@@ -125,6 +158,10 @@
 .sidenav:hover .nav-links {
   display: block; /* Show nav links when hovered */
 }
+.user-profile:hover{
+  background-color: #04274d;
+  
+}
   .nav-links{
       list-style: none;
       position: relative;
@@ -136,7 +173,7 @@
   .nav-links li a{
     color:#fff;
     text-decoration: none;
-    padding: 10px 14px;
+    padding: 5px 1px;
     display: flex;
     align-items: center;
   }
@@ -155,7 +192,7 @@
   background: #fff;
   align-items: center;
   width: 80%; /* Adjust width as needed */
-  height: 47px;
+  height: 40px;
   position: absolute;
   left: 50%; /* Center horizontally */
   transform: translateX(-50%); /* Adjust position to be centered */
@@ -173,6 +210,35 @@
     display: block;
   }
   .nav-links li:nth-child(1):hover ~  .active{
+    top: 1.5%;
+  }
+  .nav-links li:nth-child(2):hover ~  .active{
+    top: 14%;
+  }
+  .nav-links li:nth-child(3):hover ~  .active{
+    top: 26.5%;
+  }
+  .nav-links li:nth-child(4):hover ~  .active{
+    top: 39%;
+  }
+  .nav-links li:nth-child(5):hover ~  .active{
+    top: 51.5%;
+  }
+  .nav-links li:nth-child(6):hover ~  .active{
+    top: 64%;
+  }
+  .nav-links li:nth-child(7):hover ~  .active{
+    top: 76.5%;
+  }
+  .nav-links li:nth-child(8):hover ~  .active{
+    top: 89%;
+  }
+
+  .main-content {
+  margin-top: 70px;
+  margin-left: 260px;
+}
+  .nav-links li:nth-child(1):hover ~  .active{
     top: 3%;
     
   }
@@ -188,7 +254,7 @@
 
   .main-content {
   margin-top: 60px;
-  margin-left: 260px;
+  margin-left: 80px;
 }
 
   @media only screen and (max-width: 600px){
@@ -209,12 +275,36 @@
     }
 
   }
+  .profile-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0056b3;  /* Blue background or you can set any color */
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+  .initials {
+    letter-spacing: -2px; /* Adjust this value to make the letters closer */
+    font-size: 24px; /* Adjust the size */
+    font-weight: normal;
+  }
   </style>
   </head>
   <body>
   <header>
     <div class="navbar">
-      <a href="/Logout" class="btn-outline-danger">Log Out</a>
+      <div class="user-profile dropdown">
+        <div class="profile-icon">
+            <span class="initials">
+                <%= userInitals.firstName.charAt(0) %><%= userInitals.lastName.charAt(0) %> <!-- Adjust these fields to match your data structure -->
+            </span>
+        </div>
+        <div class="dropdown-content">
+            <a href="/changePassword">Change Password</a>
+            <a href="/Logout">Logout</a>
+        </div>
+      </div>
     </div>
       <div class="sidenav">
         <img src="/images/StMarysUniversity.png" style="width:50px;height:50px;" class="logo-icon">

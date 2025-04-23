@@ -5,6 +5,8 @@ const PORT = 3000;
 const moment = require('moment');
 const session = require('express-session');
 const bcrypt = require('bcrypt')
+const nodemailer = require("nodemailer");
+const { userInfoMiddleware } = require('./utils/headerInitials');
 
 app.use(session({
   secret: 'test-secret-key',  // Change this to a secure key
@@ -28,12 +30,11 @@ app.use((req, res, next) => {
 
 // Use the model only if it hasn't been defined yet
 const Event = mongoose.models.EventInfo || mongoose.model('EventInfo', eventSchema, 'EventInfo');
-
+app.use(userInfoMiddleware)
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use('/images', express.static('images'));
 app.locals.moment = moment; 
-
 
 // Connect to PAApp database
 const uri = "mongodb+srv://ksmith30:A11Th3Stars@seniorproject.brwao.mongodb.net/PAApp?retryWrites=true&w=majority&appName=SeniorProject";

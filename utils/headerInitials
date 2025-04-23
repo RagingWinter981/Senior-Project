@@ -1,0 +1,33 @@
+const LogIn = require('../models/LogIn');
+const UserInfo = require('../models/UserInfo');
+
+
+// In your middleware (headerInitials.js)
+const userInfoMiddleware = async (req, res, next) => {
+    if (req.session && req.session.user && req.session.user.id) {
+        try {
+            const loginInfo = await LogIn.findById(req.session.user.id);
+
+            if (loginInfo) {
+                const userInitals = await UserInfo.findOne(
+                    { Email: loginInfo.UserName }
+                );
+            
+                if (userInitals) {
+                    const firstName = userInitals.fName;
+                    const lastName = userInitals.lName;
+                    const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+
+                    res.locals.userInitals = { initials, firstName, lastName };
+                }
+            }
+        } catch (err) {
+            console.error('Error fetching user data:', err);
+        }
+    } else {
+        // console.log('User is not logged in or session is invalid');
+    }
+
+    next();
+};
+module.exports = { userInfoMiddleware };
