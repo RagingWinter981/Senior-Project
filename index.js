@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");
 const { userInfoMiddleware } = require('./utils/headerInitials');
 
+app.use(userInfoMiddleware)
+
 app.use(session({
   secret: 'test-secret-key',  // Change this to a secure key
   resave: true,
@@ -30,8 +32,9 @@ app.use((req, res, next) => {
 
 // Use the model only if it hasn't been defined yet
 const Event = mongoose.models.EventInfo || mongoose.model('EventInfo', eventSchema, 'EventInfo');
+
 app.use(userInfoMiddleware)
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/images', express.static('images'));
 app.locals.moment = moment; 

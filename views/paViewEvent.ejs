@@ -290,10 +290,12 @@
                 <div class="participant-card">
                     <div class="participant-info">
                         <p><%= row.fName %> <%= row.lName %></p>
+                        <p><strong>Role:</strong> <%= row.role ? row.role : 'PA' %></p>
                         <p><%= row.Email %></p>
                     </div>
-                    
                 </div>
+                
+            <br>
             <% }) %>
         </div>
     </div>

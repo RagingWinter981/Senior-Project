@@ -245,6 +245,15 @@
 .btn-cancel:hover {
     background: #e53935;
 }
+button .material-icons,
+a .material-icons {
+    vertical-align: middle;
+    font-size: 20px; /* Adjust size as needed */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 
 /* Animations */
 @keyframes fadeIn {
@@ -321,7 +330,8 @@ button:hover {
                 <tr>
                     <th>Event Name</th>
                     <th>Date</th>
-                    <th>Hours Worked</th>
+                    <th>Hours</th>
+                    <th>Role</th>
                     <th>Reasoning</th>
                     <th>Status</th>
                 </tr>
@@ -337,6 +347,7 @@ button:hover {
                         <td><%= event.EventName %></td>
                         <td><%= new Date(event.DateReportTime).toLocaleDateString('en-US') %></td>
                         <td><%= hour.HoursEarned %></td>
+                        <td><%= hour.role ? hour.role : 'PA' %>  
                         <td><%= hour.Reasoning %></td>
                         <td><%= hour.Approval %>
                     </tr>
@@ -354,7 +365,8 @@ button:hover {
                 <tr>
                     <th>Event Name</th>
                     <th>Date</th>
-                    <th>Hours Worked</th>
+                    <th>Hours</th>
+                    <th>Role</th>
                     <th>Reasoning</th>
                     <th>Status</th>
                     <th style="width:30%">Actions</th>
@@ -371,6 +383,7 @@ button:hover {
                         <td><%= event.EventName %></td>
                         <td><%= new Date(event.DateReportTime).toLocaleDateString('en-US') %></td>
                         <td><%= hour.HoursEarned %></td>
+                        <td><%= hour.role ? hour.role : 'PA' %>  
                         <td><%= hour.Reasoning %></td>
                         <td><%= hour.Approval || 'Submit for approval' %></td>
                         <td> 
@@ -393,7 +406,8 @@ button:hover {
                 <tr>
                     <th>Event Name</th>
                     <th>Date</th>
-                    <th>Hours Worked</th>
+                    <th>Hours</th>
+                    <th>Role</th>
                     <th>Reasoning</th>
                     <th>Actions</th>
                 </tr>
@@ -409,6 +423,7 @@ button:hover {
                         <td><%= event.EventName %></td>
                         <td><%= new Date(event.DateReportTime).toDateString() %></td>
                         <td><%= hour.HoursEarned %></td>
+                        <td><%= hour.role ? hour.role : 'PA' %>                        </td>
                         <td><%= hour.Reasoning %></td>
                         <td>
                             <% if (moment(event.DateReportTime).isSameOrAfter(moment().add(2,'weeks'))) { %>

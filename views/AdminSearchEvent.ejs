@@ -202,9 +202,33 @@ button:active {
             <!-- PA Details Section -->
             <div class="card-section">
                 <h3>PA Information</h3>
-                <p><strong>Location:</strong> <%= row.Location %></p>
-                <p><strong>Credit Hours:</strong> <%= row.NumOfHours %> &nbsp; <strong>Number of Spots: </strong><%= eventSignupCounts[row._id] || 0 %> / <%= row.NumOfPAs %></p>         
+                <p><strong>Location:</strong> <%= row.Location %> &nbsp; <strong>Spots: </strong><%= eventSignupCounts[row._id] || 0 %> / <%= row.NumOfPAs %></p> 
+                <p><strong>Credit Hours:</strong> <%= row.NumOfHours %> &nbsp; <% if (row.BackUp > 0) { %> <strong>Back up PAs: </strong><%= 0 %> / <%= row.BackUp %></p> <% } %>      
+                <% const roles = row.Roles || {}; %>
+                <% const hasAnyRoles = Object.values(roles).some(val => parseInt(val) > 0); %>
+
+                <% if (hasAnyRoles) { %>
+                <p><strong>Roles:</strong></p>
+                <ul>
+                    <% if (parseInt(roles.golfCartDriver) > 0) { %>
+                    <p>Golf Cart Driver: <%= roles.golfCartDriver %></p>
+                    <% } %>
+                    <% if (parseInt(roles.leadPA) > 0) { %>
+                    <p>Lead PA: <%= roles.leadPA %></p>
+                    <% } %>
+                    <% if (parseInt(roles.senior) > 0) { %>
+                    <p>Senior: <%= roles.senior %></p>
+                    <% } %>
+                    <% if (parseInt(roles.junior) > 0) { %>
+                    <p>Junior: <%= roles.junior %></p>
+                    <% } %>
+                    <% if (parseInt(roles.sophomore) > 0) { %>
+                    <p>Sophomore: <%= roles.sophomore %></p>
+                    <% } %>
+                </ul>
+                <% } %>
             </div>
+
 
 
             <!-- Buttons -->

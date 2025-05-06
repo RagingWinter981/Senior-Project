@@ -138,7 +138,9 @@ button:hover {
   <div class="form-container">
     <h2>Submission Form</h2>
   
-    <form action="/editEvents/<%=event._id%>" method="POST" >
+    <form  id="eventForm" action="/editEvents/<%=event._id%>" method="POST" >
+      <% const isLive = new Date() >= new Date(event.LiveTime); %>
+
       <!-- Event Details Section -->
       <fieldset class="form-group">
         <legend>Event Details</legend>
@@ -175,6 +177,10 @@ button:hover {
           <label for="plus-minus-time">+/- Time</label>
           <input type="number" id="AdjustedTime" name="AdjustedTime" placeholder="Enter time adjustment" value="<%= event.AdjustedTime %>" required>
         </div>
+        <div class="form-group">
+          <label for="LiveTime">LiveTime Time</label>
+          <input type="datetime-local" id="LiveTime" name="LiveTime" value="<%= moment(event.LiveTime).format('YYYY-MM-DDTHH:mm') %>" required>
+        </div>
       </fieldset>
   
       <!-- Contact Information Section -->
@@ -207,9 +213,57 @@ button:hover {
         </textarea>
         
         <div class="form-group">
-          <label for="number-of-spots">Number of Spots</label>
-          <input type="number" id="NumOfPAs" name="NumOfPAs" min="1" value="<%= event.NumOfPAs %>" required>
+          <label>Number of Spots</label>
+          <input
+            type="number"
+            id="NumOfPAs"
+            name="numSpots"
+            value="<%= event.NumOfPAs || 0 %>"
+            <%= isLive ? 'disabled' : '' %>
+          />
         </div>
+        
+        <!-- Backup PA
+        <div class="form-group">
+          <label for="BackUp">Number of Backup PAs (Optional)</label>
+          <input type="number" id="BackUp" name="BackUp" min="0" value="<%= event.BackUp || 0 %>" <%= isLive ? 'disabled' : '' %>>
+        </div> -->
+
+        <% const hasRoles =
+          event.enableRoles === 'yes' ||
+          (event.Roles && Object.values(event.Roles).some(val => parseInt(val) > 0)); %>
+
+        <!-- Enable Roles -->
+        <div class="form-group">
+          <label for="enableRoles">Do you want roles?</label>
+          <select id="enableRoles" name="enableRoles" <%= isLive ? 'disabled' : '' %>>
+            <option value="no" <%= hasRoles ? '' : 'selected' %>>No</option>
+            <option value="yes" <%= hasRoles ? 'selected' : '' %>>Yes</option>
+          </select>
+        </div>
+
+        <!-- Roles Section -->
+        <div id="rolesSection" style="<%= hasRoles ? '' : 'display:none;' %>; margin-top: 10px;">
+          <label>How many PAs are taking these roles?</label><br>
+
+          <label for="golfCartDriver">Golf Cart Driver:</label>
+          <input type="number" id="golfCartDriver" name="Roles[golfCartDriver]" min="0" value="<%= event.Roles?.golfCartDriver || 0 %>" <%= isLive ? 'disabled' : '' %>><br>
+
+          <label for="leadPA">Lead PA:</label>
+          <input type="number" id="leadPA" name="Roles[leadPA]" min="0" value="<%= event.Roles?.leadPA || 0 %>" <%= isLive ? 'disabled' : '' %>><br>
+
+          <label for="senior">Senior:</label>
+          <input type="number" id="senior" name="Roles[senior]" min="0" value="<%= event.Roles?.senior || 0 %>" <%= isLive ? 'disabled' : '' %>><br>
+
+          <label for="junior">Junior:</label>
+          <input type="number" id="junior" name="Roles[junior]" min="0" value="<%= event.Roles?.junior || 0 %>" <%= isLive ? 'disabled' : '' %>><br>
+
+          <label for="sophomore">Sophomore:</label>
+          <input type="number" id="sophomore" name="Roles[sophomore]" min="0" value="<%= event.Roles?.sophomore || 0 %>" <%= isLive ? 'disabled' : '' %>><br>
+        </div>
+
+
+
       </fieldset>
   
       <!-- Submit Button -->
@@ -219,5 +273,45 @@ button:hover {
     </form>
   </div>
 <!-- </div> -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const enableRoles = document.getElementById('enableRoles');
+    const rolesSection = document.getElementById('rolesSection');
+    const form = document.getElementById('eventForm');
+
+    enableRoles.addEventListener('change', () => {
+      rolesSection.style.display = enableRoles.value === 'yes' ? 'block' : 'none';
+    });
+
+    form.addEventListener('submit', (e) => {
+      const totalSpots = parseInt(document.getElementById('NumOfPAs').value) || 0;
+
+      if (enableRoles.value === 'yes') {
+        const roleIds = ['golfCartDriver', 'leadPA', 'senior', 'junior', 'sophomore'];
+        let totalRoles = 0;
+
+        for (const id of roleIds) {
+          const roleInput = document.getElementById(id);
+          const value = parseInt(roleInput.value) || 0;
+
+          if (value < 0) {
+            e.preventDefault();
+            alert('Role values cannot be negative.');
+            return;
+          }
+
+          totalRoles += value;
+        }
+
+        if (totalRoles > totalSpots) {
+          e.preventDefault();
+          alert('The total number of role assignments cannot exceed the number of PA spots.');
+        }
+      }
+    });
+  });
+</script>
+
+
 </body>
 </html>

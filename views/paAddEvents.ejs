@@ -159,6 +159,74 @@
         font-weight: normal;
         color: #777;
     }
+    /* Modal Styling */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.6); /* Background overlay */
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 30px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 12px;
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+        animation: slideDown 0.4s ease-out;
+    }
+
+    @keyframes slideDown {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+    }
+    .card-section ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.card-section li {
+    font-size: 14px;
+    color: #333;
+    margin: 4px 0;
+}
+input[disabled] {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.full-badge {
+    background-color: #d9534f;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 8px;
+}
+
 
         /* Add media queries for smaller screens */
         @media screen and (max-width:720px) {
@@ -216,7 +284,7 @@
                         <span class="attend-badge">Attending</span>
                 <% } else if( eventSignupCounts[row._id] === row.NumOfPAs) { %>
                     <span class="full-badge"> Full</span>
-                <% } else { %>
+                <% } else if ( new Date(row.LiveTime) <= new Date()) { %>
                     <span class="live-badge">Live</span>
                 <% } %>
 
@@ -240,9 +308,38 @@
                     <div class="card-section">
                         <h3>PA Information</h3>
                         <p><strong>Location:</strong> <%= row.Location %></p>
-                        <p><strong>Credit Hours:</strong> <%= row.NumOfHours %> &nbsp; <strong>Number of Spots: </strong><%= eventSignupCounts[row._id] || 0 %> / <%= row.NumOfPAs %></p>                
+                        <p><strong>Credit Hours:</strong> <%= row.NumOfHours %> &nbsp;
+                           <strong>Number of Spots: </strong> <%= eventSignupCounts[row._id] || 0 %> / <%= row.NumOfPAs %></p>
+                    
+                        <!-- <% if (row.BackUp > 0) { %>
+                            <p><strong>Back up PAs: </strong> <%= eventRoleCounts[row._id]?.backupPA || 0 %> / <%= row.BackUp %></p>
+                        <% } %> -->
+                    
+                        <% const roles = row.Roles || {}; %>
+                        <% const hasAnyRoles = Object.values(roles).some(val => parseInt(val) > 0); %>
+                    
+                        <% if (hasAnyRoles) { %>
+                            <p><strong>Roles Needed:</strong></p>
+                            <ul>
+                                <% if (parseInt(roles.golfCartDriver) > 0) { %>
+                                    <li>Golf Cart Driver: <%= eventRoleCounts[row._id]?.golfCartDriver || 0 %> / <%= roles.golfCartDriver %></li>
+                                <% } %>
+                                <% if (parseInt(roles.leadPA) > 0) { %>
+                                    <li>Lead PA: <%= eventRoleCounts[row._id]?.leadPA || 0 %> / <%= roles.leadPA %></li>
+                                <% } %>
+                                <% if (parseInt(roles.senior) > 0) { %>
+                                    <li>Senior: <%= eventRoleCounts[row._id]?.senior || 0 %> / <%= roles.senior %></li>
+                                <% } %>
+                                <% if (parseInt(roles.junior) > 0) { %>
+                                    <li>Junior: <%= eventRoleCounts[row._id]?.junior || 0 %> / <%= roles.junior %></li>
+                                <% } %>
+                                <% if (parseInt(roles.sophomore) > 0) { %>
+                                    <li>Sophomore: <%= eventRoleCounts[row._id]?.sophomore || 0 %> / <%= roles.sophomore %></li>
+                                <% } %>
+                            </ul>
+                        <% } %>
                     </div>
-
+                    
     
                 <!-- Buttons -->
                 <div class="btn-container">
@@ -250,14 +347,20 @@
                         <i class="material-icons">info</i>
                     </a>
                         <% if (signedUpEventIds.has(row._id.toString())) { %>
-                            <!-- User already signed up -->
-                            <!-- <span class="signed-up-text"> You’re signed up</span> -->
                         <% } else if( eventSignupCounts[row._id] === row.NumOfPAs) { %>
+                        <% } else if ( new Date(row.LiveTime) >= new Date()) { %>
                         
                         <% }else{ %>
-                            <a href='/paSignup/<%= row._id %>' class="signup-btn">
+                            <a href="#" 
+                                class="addEventModal-btn" 
+                                data-event-id="<%= row._id %>" 
+                                data-spots="<%= row.NumOfPAs %>" 
+                                data-roles='<%- JSON.stringify(row.Roles || {}) %>'
+                                data-role-counts='<%- JSON.stringify(eventRoleCounts[row._id] || {}) %>'
+                                data-backup='<%- JSON.stringify(row.backupPAs || []) %>'>
                                 <i class="material-icons">event_available</i>
                             </a>
+
                         <% } %>
                 </div>
             </div>
@@ -291,8 +394,33 @@
                 <div class="card-section">
                     <h3>PA Information</h3>
                     <p><strong>Location:</strong> <%= previous.Location %></p>
-                    <p><strong>Credit Hours:</strong> <%= previous.NumOfHours %> &nbsp; <strong>Number of Spots: </strong><%=// eventSignupCounts[row._id] || 0 %> / <%= previous.NumOfPAs %></p>                
-                </div>
+                    <p><strong>Credit Hours:</strong> <%= previous.NumOfHours %> &nbsp; <strong>Number of Spots: </strong><%=// eventSignupCounts[row._id] || 0 %> / <%= previous.NumOfPAs %></p>
+                    <% if (previous.BackUp > 0) { %> <strong>Back up PAs: </strong><%= 0 %> / <%= previous.BackUp %></p> <% } %>      
+                    <% const roles = previous.Roles || {}; %>
+                    <% const hasAnyRoles = Object.values(roles).some(val => parseInt(val) > 0); %>
+    
+                    <% if (hasAnyRoles) { %>
+                    <p><strong>Roles:</strong></p>
+                    <ul>
+                        <% if (parseInt(roles.golfCartDriver) > 0) { %>
+                        <p>Golf Cart Driver: <%= roles.golfCartDriver %></p>
+                        <% } %>
+                        <% if (parseInt(roles.leadPA) > 0) { %>
+                        <p>Lead PA: <%= roles.leadPA %></p>
+                        <% } %>
+                        <% if (parseInt(roles.senior) > 0) { %>
+                        <p>Senior: <%= roles.senior %></p>
+                        <% } %>
+                        <% if (parseInt(roles.junior) > 0) { %>
+                        <p>Junior: <%= roles.junior %></p>
+                        <% } %>
+                        <% if (parseInt(roles.sophomore) > 0) { %>
+                        <p>Sophomore: <%= roles.sophomore %></p>
+                        <% } %>
+                    </ul>
+                    <% } %>
+                </div>                
+                
 
     
                 <!-- Buttons -->
@@ -307,3 +435,76 @@
 </div>
 </body>
 </html>
+<!-- Modal Structure -->
+<div id="signupModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="modalClose">&times;</span>
+        <h2>Confirm Signup</h2>
+        <p>Are you sure you want to sign up for this event?</p>
+        <form id="modalForm" method="POST" action="/paSignup">
+            <div id="modalEventDetails">
+                <p><strong>Available Spots:</strong> <span id="modalSpots"></span></p>
+                <div id="modalRolesContainer">
+                    <p><strong>Select a Role:</strong></p>
+                    <div id="modalRolesCheckboxes"></div>
+                </div>
+            </div>
+            <!-- Hidden input to include event ID -->
+            <input type="hidden" name="eventId" id="modalEventId">
+            <br>
+            <button type="submit" class="signup-btn">Yes, Sign Me Up</button>
+        </form>
+    </div>
+</div>
+
+  
+  
+  <script>
+    document.querySelectorAll('.addEventModal-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        const eventId = this.dataset.eventId;
+        const spots = this.dataset.spots;
+        const roles = JSON.parse(this.dataset.roles || '{}'); // e.g., { "Golf Cart": 2, "Check-in": 1 }
+        const filledCounts = JSON.parse(this.dataset.roleCounts || '{}'); // e.g., { "Golf Cart": 2 }
+  
+        // Fill modal data
+        document.getElementById('modalEventId').value = eventId;
+        document.getElementById('modalSpots').textContent = spots;
+  
+        const rolesContainer = document.getElementById('modalRolesCheckboxes');
+        const rolesWrapper = document.getElementById('modalRolesContainer');
+  
+        rolesContainer.innerHTML = "";
+        let hasRole = false;
+  
+        for (const [role, totalCount] of Object.entries(roles)) {
+          const filled = filledCounts[role] || 0;
+          const remaining = totalCount - filled;
+          const disabled = remaining <= 0 ? 'disabled' : '';
+  
+          hasRole = true;
+          const radioId = `role-${role.replace(/\s+/g, '-')}`;
+  
+          rolesContainer.innerHTML += `
+            <label>
+              <input type="radio" name="role" value="${role}" id="${radioId}" ${disabled}>
+              ${role} (${remaining > 0 ? remaining + ' spot' + (remaining > 1 ? 's' : '') : 'Full'})
+            </label><br>`;
+        }
+  
+        rolesWrapper.style.display = hasRole ? 'block' : 'none';
+        document.getElementById('signupModal').style.display = 'block';
+      });
+    });
+  
+    document.getElementById('modalClose').addEventListener('click', function () {
+      document.getElementById('signupModal').style.display = 'none';
+    });
+  
+    window.addEventListener('click', function (event) {
+      if (event.target === document.getElementById('signupModal')) {
+        document.getElementById('signupModal').style.display = 'none';
+      }
+    });
+  </script>
+  

@@ -317,34 +317,43 @@ router.get("/events",adminCheckLoggedIn, (req, res) => {
 
 
 //Admin Create Events Page with Create Function
-router.post("/events",adminCheckLoggedIn, async (req, res) => {
+router.post("/events", adminCheckLoggedIn, async (req, res) => {
     try {
-        const event = new Event({
-            EventName: req.body.EventName,
-            DateReportTime: new Date(req.body.DateReportTime),
-            DateStart: new Date(req.body.DateStart),
-            DateEnd: new Date(req.body.DateEnd),
-            LiveTime: new Date(req.body.LiveTime),
-            AdjustedTime: parseFloat(req.body.AdjustedTime),
-            Location: req.body.Location,
-            NumOfHours: parseFloat(req.body.NumOfHours),
-            Attire: req.body.Attire,
-            PACoordinatorName: req.body.PACoordinatorName,
-            PACoordinatorOffice: req.body.PACoordinatorOffice,
-            PACoordinatorTitle: req.body.PACoordinatorTitle,           
-            NumOfPAs: parseInt(req.body.NumOfPAs),
-            Description: req.body.Description,
-
-        });
-        await event.save();
-        console.log("Event saved:", event.toObject()); // Log event to ensure it's saved
-        res.redirect('/adminHome');
+        console.log("req.body:", req.body);
+      const event = new Event({
+        EventName: req.body.EventName,
+        DateReportTime: new Date(req.body.DateReportTime),
+        DateStart: new Date(req.body.DateStart),
+        DateEnd: new Date(req.body.DateEnd),
+        LiveTime: new Date(req.body.LiveTime),
+        AdjustedTime: parseFloat(req.body.AdjustedTime),
+        Location: req.body.Location,
+        NumOfHours: parseFloat(req.body.NumOfHours),
+        Attire: req.body.Attire,
+        PACoordinatorName: req.body.PACoordinatorName,
+        PACoordinatorOffice: req.body.PACoordinatorOffice,
+        PACoordinatorTitle: req.body.PACoordinatorTitle,
+        NumOfPAs: parseInt(req.body.NumOfPAs),
+        Description: req.body.Description,
+        Roles: {
+          golfCartDriver: parseInt(req.body.Roles['golfCartDriver']) || 0,
+          leadPA: parseInt(req.body.Roles['leadPA']) || 0,
+          senior: parseInt(req.body.Roles['senior']) || 0,
+          junior: parseInt(req.body.Roles['junior']) || 0,
+          sophomore: parseInt(req.body.Roles['Sophomore']) || 0
+        },
+        BackUp: parseInt(req.body.BackUp) || 0
+      });
+  
+      await event.save();
+      console.log("Event saved:", event.toObject());
+      res.redirect('/adminHome');
     } catch (err) {
-        console.log("Error:", err);
-        res.json({ message: err.message, Type: 'danger' });
+      console.log("Error:", err);
+      res.json({ message: err.message, Type: 'danger' });
     }
-});
-
+  });
+  
 //Fetching Search Events Page
 router.get("/allEvents",adminCheckLoggedIn, async (req, res) => {
     try {
@@ -567,7 +576,7 @@ router.post("/CreateEventFromRequest/:id",adminCheckLoggedIn, async (req, res) =
 });
 
 
-//Rejjecting Request
+//Rejecting Request
 router.post("/rejectRequestedEvent",adminCheckLoggedIn, async(req,res) =>{
     const {requestId, Reasoning } = req.body;
 
@@ -602,16 +611,32 @@ router.get('/edit/:id',adminCheckLoggedIn, async (req, res) => {
     }
 });
 
-//Edit Function with ID#
-router.post('/editEvents/:id',adminCheckLoggedIn, async (req, res) => {
+router.post('/editEvents/:id', adminCheckLoggedIn, async (req, res) => {
     console.log("Received POST request for event ID:", req.params.id);
+    console.log("Form data:", req.body);
+
     try {
         const id = req.params.id;
+
+        // Check if roles are enabled
+        const enableRoles = req.body.enableRoles === 'yes';
+
+        const roles = enableRoles
+            ? {
+                golfCartDriver: parseInt(req.body.Roles?.golfCartDriver) || 0,
+                leadPA: parseInt(req.body.Roles?.leadPA) || 0,
+                senior: parseInt(req.body.Roles?.senior) || 0,
+                junior: parseInt(req.body.Roles?.junior) || 0,
+                sophomore: parseInt(req.body.Roles?.sophomore) || 0
+            }
+            : { golfCartDriver: 0, leadPA: 0, senior: 0, junior: 0, sophomore: 0 };
+
         const updatedEvent = await Event.findByIdAndUpdate(id, {
-            EventName: req.body.EventName, 
+            EventName: req.body.EventName,
             DateReportTime: new Date(req.body.DateReportTime),
             DateStart: new Date(req.body.DateStart),
             DateEnd: new Date(req.body.DateEnd),
+            LiveTime: new Date(req.body.LiveTime),
             AdjustedTime: parseFloat(req.body.AdjustedTime),
             Location: req.body.Location,
             NumOfHours: parseFloat(req.body.NumOfHours),
@@ -619,8 +644,10 @@ router.post('/editEvents/:id',adminCheckLoggedIn, async (req, res) => {
             PACoordinatorName: req.body.PACoordinatorName,
             PACoordinatorOffice: req.body.PACoordinatorOffice,
             PACoordinatorTitle: req.body.PACoordinatorTitle,
-            NumOfPAs: parseInt(req.body.NumOfPAs),
+            NumOfPAs: parseInt(req.body.numSpots),
             Description: req.body.Description,
+            Roles: roles,
+            BackUp: parseInt(req.body.BackUp) || 0
         });
 
         if (updatedEvent) {
@@ -628,22 +655,27 @@ router.post('/editEvents/:id',adminCheckLoggedIn, async (req, res) => {
                 type: 'success',
                 message: 'Event updated successfully',
             };
+            console.log("EDIT ROUTE HIT. Event ID:", req.params.id);
+            console.log("Request body:", req.body);
             res.redirect('/allEvents');
         } else {
             req.session.message = {
                 type: 'danger',
                 message: 'Event not found',
             };
-            res.redirect('/allEvents');
+            res.redirect('/AdminHome');
         }
     } catch (err) {
         req.session.message = {
             type: 'danger',
             message: err.message,
         };
-        res.redirect('/allEvents');
+        console.log(err)
+        res.redirect('/AdminHome');
+
     }
 });
+
 
 // Delete Event route 
 router.get('/delete/:id',adminCheckLoggedIn, async(req,res)=>{
@@ -1173,85 +1205,120 @@ router.get("/PAHome",paCheckLoggedIn, async(req, res) => {
 });
 
 // PA events Page
-router.get("/paAddEvents",paCheckLoggedIn, async (req, res) => {
+router.get("/paAddEvents", paCheckLoggedIn, async (req, res) => {
     try {
-        //all events    
         console.log("Pa Events page")    
-        const userId = req.session.user.id; 
-        const events = await Event.find({DateReportTime:  { $gt: new Date() } }).sort({DateReportTime: 1}); // Fetch data from the database
-        const pastEvents = await Event.find({DateReportTime:  { $lt: new Date() } }).sort({DateReportTime: 1});
-        //signed up for events
+        const userId = req.session.user.id;
+
+        const events = await Event.find({ DateReportTime: { $gt: new Date() } }).sort({ DateReportTime: 1 });
+        const pastEvents = await Event.find({ DateReportTime: { $lt: new Date() } }).sort({ DateReportTime: 1 });
+
         const userSignups = await Hours.find({ UserID: userId });
         const signedUpEventIds = new Set(userSignups.map(signup => signup.EventID.toString()));
 
-        // number of spots
         const eventSignupCounts = {};
+        const eventRoleCounts = {};
 
         for (const event of events) {
-            const count = await Hours.countDocuments({ EventID: event._id });
-            eventSignupCounts[event._id] = count;
+            const eventId = event._id;
+
+            const hours = await Hours.find({ EventID: eventId });
+            eventSignupCounts[eventId] = hours.length;
+
+            // Count per role
+            const roleCounts = {}; // This should be declared outside the loop for each event
+            for (const hour of hours) {
+                const role = hour.role || "Unassigned"; // Use 'role' consistently, fallback to "Unassigned"
+                
+                if (!eventRoleCounts[eventId]) eventRoleCounts[eventId] = {};
+                
+                // Update the count for the current role
+                eventRoleCounts[eventId][role] = (eventRoleCounts[eventId][role] || 0) + 1;
+            }            
         }
-        //past events 
+        console.log(eventRoleCounts)
 
-        res.render("paAddEvents", { events,signedUpEventIds, eventSignupCounts, pastEvents });
+        res.render("paAddEvents", {
+            events,
+            signedUpEventIds,
+            eventSignupCounts,
+            eventRoleCounts,
+            pastEvents
+        });
     } catch (err) {
-        res.json({ message: err.message }); // Handle errors
+        res.json({ message: err.message });
     }
-})
+});
 
-//Signing up for an event
-router.get('/paSignup/:id', paCheckLoggedIn,async(req,res)=>{
+
+router.post('/paSignup', paCheckLoggedIn, async (req, res) => {
     try {
-        const id = req.params.id;
-        const event = await Event.findById(id)
-        //const Id = req.session.user.id
+        const { eventId, role } = req.body;
+        const event = await Event.findById(eventId);
+        console.log(eventId, role)
+        if (!event) {
+            return res.status(404).send("Event not found");
+        }
 
         const Signup = new Hours({
             UserID: req.session.user.id,
             EventID: event._id,
             HoursEarned: event.NumOfHours,
             Reasoning: "Credit hours met",
+            ...(role && { role: role }) // only include if role exists
         });
+
         await Signup.save();
         console.log("Event saved:", Signup.toObject());
 
-        res.redirect("/paAddEvents")
+        res.redirect("/paAddEvents");
     } catch (err) {
         console.log("Error:", err);
-        res.json({ message: err.message, Type: 'danger' });
+        res.status(500).json({ message: err.message, Type: 'danger' });
     }
+});
 
-})
 
 //
 router.get("/paView/:id", paCheckLoggedIn, async (req, res) => {
     let id = req.params.id;
     try {
         const event = await Event.findById(id);
+        if (!event) return res.redirect('/');
 
-        if (!event) {
-            return res.redirect('/');
-        }
-
-        // Retrieve all hours associated with the event
+        // Get Hours records for this event
         const eventData = await Hours.find({ EventID: event._id });
 
-        // Extract all UserID values
+        // Get LogIn records for those UserIDs
         const userIds = eventData.map(data => data.UserID);
+        const userLogins = await LogIn.find({ _id: { $in: userIds } });
 
-        // Find all associated emails
-        const userEmails = await LogIn.find({ _id: { $in: userIds } });
-        
+        // Map login _id -> email for lookup
+        const idToEmail = Object.fromEntries(userLogins.map(login => [login._id.toString(), login.UserName]));
 
-        // Extract the email addresses
-        const emails = userEmails.map(user => user.UserName);
+        // Get corresponding UserInfo entries by email
+        const emails = Object.values(idToEmail);
+        const userInfos = await UserInfo.find({ Email: { $in: emails } });
 
-        // Find all users with the matching emails
-        const userNames = await UserInfo.find({ Email: { $in: emails } });
+        // Attach role and hourId to each user
+        const userNames = userInfos.map(user => {
+            const login = userLogins.find(login => login.UserName === user.Email);
+            const hour = login ? eventData.find(h => h.UserID === login._id.toString()) : null;
+
+            return {
+                ...user.toObject(),
+                role: hour?.role || null,
+                hourId: hour?._id.toString() || null,
+                loginId: login?._id.toString() || null
+            };
+        });
+
+        // Find all available users (not signed up)
         const allusers = await UserInfo.find({
             Role: 'President Ambassador',
             Email: { $nin: emails }
         });
+
         res.render('paViewEvent', { event, userNames, allusers });
 
     } catch (err) {
@@ -1259,6 +1326,7 @@ router.get("/paView/:id", paCheckLoggedIn, async (req, res) => {
         res.redirect('/');
     }
 });
+
 
 
 
@@ -1307,19 +1375,19 @@ router.post("/submitAdjustedHours", paCheckLoggedIn, async (req, res) => {
             Reasoning: reasoning,
             Approval: "Waiting for Approval",
         });
-            res.redirct('/paCheckHours')
+            res.redirect('/paCheckHours')
         if (hourEntry) {
             req.session.message = {
                 type: 'success',
                 message: 'Event updated successfully',
             };
-            res.redirct('paCheckHours')
+            res.redirect('paCheckHours')
         } else {
             req.session.message = {
                 type: 'danger',
                 message: 'Event not found',
             };
-            res.redirct('paCheckHours')
+            res.redirect('paCheckHours')
         }
     } catch (err) {
         req.session.message = {
@@ -1327,7 +1395,7 @@ router.post("/submitAdjustedHours", paCheckLoggedIn, async (req, res) => {
             message: err.message,
         };
         // Pass the data back to the view even in case of an error
-        res.render('paCheckHours');
+        res.redirect('paCheckHours');
     }
 });
 
@@ -1425,7 +1493,6 @@ router.post('/RequestDeleteEventHours', paCheckLoggedIn, async (req, res) => {
 router.get("/paResources",paCheckLoggedIn, (req, res) => {
     res.render("paResources");
 })
-
 
 
 module.exports = router;

@@ -136,9 +136,9 @@ button:hover {
 
 <!-- <div class="main-content"> -->
 <div class="form-container">
-    <h2>Submission Form</h2>
+    <h2>Create President's Ambassadors Event</h2>
   
-    <form method="POST" action="/events">
+    <form id="eventForm" method="POST" action="/events">
       <!-- Event Details Section -->
       <fieldset class="form-group">
         <legend>Event Details</legend>
@@ -213,13 +213,73 @@ button:hover {
           <label for="number-of-spots">Number of Spots</label>
           <input type="number" id="NumOfPAs" name="NumOfPAs" min="1" required>
         </div>
-      </fieldset>
-  
+        <!-- <div class="form-group">
+          <label for="BackUp">Number of Backup PAs (Optional)</label>
+          <input type="number" id="BackUp" name="BackUp" min="0">
+        </div> -->
+      
+        <!-- Do you want roles? -->
+        <div class="form-group">
+          <label for="enableRoles">Do you want roles?</label>
+          <select id="enableRoles" name="enableRoles">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+      
+        <!-- Role inputs -->
+        <div id="rolesSection" style="display: none; margin-top: 10px;">
+          <label>How many PAs are taking these roles?</label><br>
+          <label for="golfCartDriver">Golf Cart Driver:</label>
+          <input type="number" id="golfCartDriver" name="Roles[golfCartDriver]" min="0" value="0"><br>
+      
+          <label for="leadPA">Lead PA:</label>
+          <input type="number" id="leadPA" name="Roles[leadPA]" min="0" value="0"><br>
+      
+          <label for="senior">Senior:</label>
+          <input type="number" id="senior" name="Roles[senior]" min="0" value="0"><br>
+      
+          <label for="junior">Junior:</label>
+          <input type="number" id="junior" name="Roles[junior]" min="0" value="0"><br>
+      
+          <label for="Sophomore">Sophomore:</label>
+          <input type="number" id="Sophomore" name="Roles[Sophomore]" min="0" value="0"><br>
+        </div>
+        <br><br>
+      
+        <button type="submit">Create Event</button>
+      </form>
+      
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const enableRoles = document.getElementById('enableRoles');
+          const rolesSection = document.getElementById('rolesSection');
+          const form = document.getElementById('eventForm');
+      
+          enableRoles.addEventListener('change', () => {
+            rolesSection.style.display = enableRoles.value === 'yes' ? 'block' : 'none';
+          });
+      
+          form.addEventListener('submit', (e) => {
+            const totalSpots = parseInt(document.getElementById('NumOfPAs').value) || 0;
+      
+            if (enableRoles.value === 'yes') {
+              const totalRoles = 
+                parseInt(document.getElementById('golfCartDriver').value) +
+                parseInt(document.getElementById('leadPA').value) +
+                parseInt(document.getElementById('senior').value) +
+                parseInt(document.getElementById('junior').value) +
+                parseInt(document.getElementById('Sophomore').value);
+      
+              if (totalRoles > totalSpots) {
+                e.preventDefault();
+                alert('The total number of role assignments cannot exceed the number of PA spots.');
+              }
+            }
+          });
+        });
+      </script>
       <!-- Submit Button -->
-      <div class="form-group">
-        <button type="submit">Submit</button>
-      </div> 
-    </form>
   </div>
 </body>
 </html>
